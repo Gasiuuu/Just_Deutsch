@@ -73,7 +73,7 @@ function Navbar() {
             <div className="flex items-center gap-4">
                 <Link
                     to="/kup"
-                    className="px-3 py-1.5 rounded text-[1.2rem] font-bold text-white no-underline bg-[linear-gradient(45deg,#000080,#800080)]"
+                    className="px-3 py-1.5 rounded text-[1.2rem] font-medium text-white no-underline bg-[linear-gradient(45deg,#000080,#800080)]"
                 >
                     Kup Premium
                 </Link>
