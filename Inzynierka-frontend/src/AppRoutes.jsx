@@ -12,8 +12,8 @@ import DictionaryPage from "./pages/DictionaryPage.jsx";
 import {useEffect} from "react";
 import UserStore from "./stores/UserStore.js";
 import TranslatePage from "./pages/TranslatePage.jsx";
-import GapFill from "./icons/GapFill.jsx";
 import GapFillPage from "./pages/GapFillPage.jsx";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
 
 function AppRoutes() {
 
@@ -60,6 +60,7 @@ function AppRoutes() {
                 <Route path="/slownik" element={renderLayout(<DictionaryPage />)} />
                 <Route path="/tlumaczenia" element={renderLayout(<TranslatePage />)} />
                 <Route path="/gap-fill" element={renderLayout(<GapFillPage />)}  />
+                <Route path="*" element={<NotFoundPage />} />
 
                 {UserService.adminOnly() && (
                     <>
