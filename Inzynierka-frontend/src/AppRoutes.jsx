@@ -1,5 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from "react";
 import UserService from "./services/UserService.js";
+import UserStore from "./stores/UserStore.js";
+import StartPage from "./pages/StartPage.jsx";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login/Login.jsx";
 import Navbar from "./components/Navbar.jsx";
@@ -9,8 +12,6 @@ import Register from "./pages/Register.jsx";
 import FlashcardsPage from "./pages/FlashcardsPage.jsx";
 import FlashcardSetPage from "./pages/FlashcardSetPage.jsx";
 import DictionaryPage from "./pages/DictionaryPage.jsx";
-import {useEffect} from "react";
-import UserStore from "./stores/UserStore.js";
 import TranslatePage from "./pages/TranslatePage.jsx";
 import GapFillPage from "./pages/GapFillPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
@@ -51,7 +52,8 @@ function AppRoutes() {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Navigate to="/strona-glowna" />} />
+                <Route path="/" element={<Navigate to="/start" />} />
+                <Route path="/start" element={<StartPage />} />
                 <Route path="/strona-glowna" element={renderLayout(<Home />)} />
                 <Route path="/logowanie" element={<Login />} />
                 <Route path="/fiszki" element={renderLayout(<FlashcardsPage />)}/>

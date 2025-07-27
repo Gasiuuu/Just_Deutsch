@@ -10,7 +10,7 @@ function NotFoundPage() {
     return(
         <div>
             <div className="flex flex-col items-center justify-center text-center min-h-100">
-                <NotFound style={{ width: 300, height: 300 }} />
+                <NotFound />
                 <h1 className={Login.helloText} style={{ padding: "15px" }}>
                     Zabłądziłeś! Nie ma takiej strony
                 </h1>

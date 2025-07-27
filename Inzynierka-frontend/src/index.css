@@ -50,4 +50,25 @@ html, body {
       transform: rotate(8deg);
     }
   }
+
+  --animate-slideInFromLeft: slideInFromLeft 1.5s ease forwards 1.25s;
+
+  @keyframes slideInFromLeft {
+    from { transform: translateX(-15%); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
+  }
+
+  --animate-slideInFromRight: slideInFromRight 1.5s ease forwards 0.5s;
+
+  @keyframes slideInFromRight {
+    from { transform: translateX(7%); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
+  }
+
+  --animate-fadeIn: fadeIn 2s;
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
 }
