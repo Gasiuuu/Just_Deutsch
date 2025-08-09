@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useEffect } from "react";
 import UserService from "./services/UserService.js";
 import UserStore from "./stores/UserStore.js";
+import ProtectedRoutes from "./utils/ProtectedRoutes.jsx"
 import StartPage from "./pages/StartPage.jsx";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login/Login.jsx";
@@ -54,21 +55,24 @@ function AppRoutes() {
             <Routes>
                 <Route path="/" element={<Navigate to="/start" />} />
                 <Route path="/start" element={<StartPage />} />
-                <Route path="/strona-glowna" element={renderLayout(<Home />)} />
                 <Route path="/logowanie" element={<Login />} />
-                <Route path="/fiszki" element={renderLayout(<FlashcardsPage />)}/>
-                <Route path="/fiszki/:categoryId" element={renderLayout(<FlashcardSetPage />)} />
                 <Route path="/rejestracja" element={<Register />} />
-                <Route path="/slownik" element={renderLayout(<DictionaryPage />)} />
-                <Route path="/tlumaczenia" element={renderLayout(<TranslatePage />)} />
-                <Route path="/gap-fill" element={renderLayout(<GapFillPage />)}  />
                 <Route path="*" element={<NotFoundPage />} />
+                <Route element={<ProtectedRoutes />}>
+                    <Route path="/strona-glowna" element={renderLayout(<Home />)} />
+                    <Route path="/fiszki" element={renderLayout(<FlashcardsPage />)}/>
+                    <Route path="/fiszki/:categoryId" element={renderLayout(<FlashcardSetPage />)} />
+                    <Route path="/slownik" element={renderLayout(<DictionaryPage />)} />
+                    <Route path="/tlumaczenia" element={renderLayout(<TranslatePage />)} />
+                    <Route path="/gap-fill" element={renderLayout(<GapFillPage />)}  />
+                </Route>
 
                 {UserService.adminOnly() && (
                     <>
                     </>
                 )}
             </Routes>
+
         </Router>
     );
 }

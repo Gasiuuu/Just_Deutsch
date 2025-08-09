@@ -16,6 +16,8 @@ function Navbar() {
     const clearUser = UserStore((state) => state.clearUser)
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+    const linkAuth = "/strona-glowna"
+    const linkUnauth = "/"
 
 
 
@@ -38,7 +40,7 @@ function Navbar() {
                 z-10
             "
         >
-            <Link to="/" className="flex items-center gap-2 no-underline text-black">
+            <Link to={user ? linkAuth : linkUnauth} className="flex items-center gap-2 no-underline text-black">
                 <img
                     src={logo}
                     alt="logo"

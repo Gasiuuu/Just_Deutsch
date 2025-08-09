@@ -7,7 +7,7 @@ class GPTService {
     static async generateSentenceGapFill() {
         const response = await axios.post(`${this.BASE_URL}/generate-sentence1/`,
             {},
-            { withCredentials: true }
+            {withCredentials: true}
         );
         return response.data;
     }
@@ -15,7 +15,7 @@ class GPTService {
     static async generateSentenceTranslate() {
         const response = await axios.post(`${this.BASE_URL}/generate-sentence2/`,
             {},
-            { withCredentials: true }
+            {withCredentials: true}
         );
         return response.data;
     }

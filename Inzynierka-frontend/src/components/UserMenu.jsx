@@ -15,10 +15,13 @@ function UserMenu({ onLogout }) {
                 </button>
             </Link>
 
-            <button onClick={onLogout}
-                    className="flex items-center justify-center w-full text-center px-4 py-3 hover:bg-gray-100 text-black font-medium">
-                <IoMdLogOut className="text-red-500 w-6 h-6 mr-2"/> Wyloguj się
-            </button>
+            <Link to="/start">
+                <button onClick={onLogout}
+                        className="flex items-center justify-center w-full text-center px-4 py-3 hover:bg-gray-100 text-black font-medium">
+                    <IoMdLogOut className="text-red-500 w-6 h-6 mr-2"/> Wyloguj się
+                </button>
+            </Link>
+
 
         </div>
     )

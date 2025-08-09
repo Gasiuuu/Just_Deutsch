@@ -34,7 +34,7 @@ function Login() {
     return (
         <div className={login.loginContainer}>
             <div className={login.leftSide}>
-                <Link to="/strona-glowna">
+                <Link to="/start">
                     <div className={login.logoContainer}>
                         <img src={logo} className={login.logoImg} alt="logo"/>
                         <h1 className={login.logo}>Just_deutsch</h1>
