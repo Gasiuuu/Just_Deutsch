@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useEffect } from "react";
+import {useEffect, useState} from "react";
 import UserService from "./services/UserService.js";
 import UserStore from "./stores/UserStore.js";
 import ProtectedRoutes from "./utils/ProtectedRoutes.jsx"
@@ -20,6 +20,7 @@ import NotFoundPage from "./pages/NotFoundPage.jsx";
 function AppRoutes() {
 
     const setUser = UserStore((state) => state.setUser)
+    const [rendering, setRendering] = useState(true);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -28,10 +29,15 @@ function AppRoutes() {
                 setUser(userData)
             } catch (e) {
                 console.log("Brak zalogowanego użytkownika: ", e)
+            } finally {
+                setRendering(false);
             }
+
         }
         fetchUser()
     }, [setUser])
+
+    if (rendering) return null;
 
     const renderLayout = (Component) => (
         <div className="relative w-full flex flex-col min-h-screen">

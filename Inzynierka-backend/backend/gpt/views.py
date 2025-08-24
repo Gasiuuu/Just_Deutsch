@@ -93,3 +93,43 @@ def generate_sentence2(request):
         return Response({"details": "Format promptu jest niepoprawny", "errors": serializer.errors}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def generate_dialogue(request):
+    user = request.user
+    word = request.data
+    # print(word)
+    if not word:
+        return Response({"detail": "Brak słowa do wygenerowania dialogu"})
+
+    prompt_text = (
+        f"Utwórz krótki dialog w języku niemieckim, "
+        f"w którym słowo {word} wystąpi maksymalnie dwa razy (chodzi o użycie słowa w ceku pokazania kontesktu)."
+        f"Dialog ma mieć długość 4-6 wypowiedzi. Każda wypowiedź ma zaczynać się imieniem i dwukropkiem"
+        f"Masz też zwróćić przetłumaczone na polski odpowiedzi linii dialogu."
+        f"Przetłumaczone linie nie mają mieć już imion osób uczestniczących w dialogu, tylko przetłumaczone ich wypowiedzi"
+        f"Odpowiedź ma być tylko w formacie JSON: \n"
+        "{\n"
+        '   "word": "*słowo do dialogu*"'
+        '   "lines": "["Name1: ...", "Name2: ...", "..."]"'
+        '   "translatedLines": "["Name1: ...", "Name2: ...", "..."]"'
+
+    )
+
+    Prompt.objects.create(user=user, text=prompt_text)
+
+    try:
+        response = openai.chat.completions.create(
+            model = "gpt-4.1",
+            messages = [{"role": "user", "content": prompt_text}],
+            temperature = 1,
+        )
+        content = response.choices[0].message.content.strip()
+        data = json.loads(content)
+        
+    except Exception as e:
+        return Response({"detail": f"Wystąpił błąd podczas komunikacji z OpenAI: {str(e)}"},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    return Response(data, status=status.HTTP_200_OK)

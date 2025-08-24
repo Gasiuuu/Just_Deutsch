@@ -6,7 +6,7 @@ import { TbRefresh } from "react-icons/tb";
 import { FaSearch } from "react-icons/fa";
 
 
-export default function DictionaryInput({ onSearchResult }) {
+export default function DictionaryInput({ onSearchResult, onWord }) {
     const [q, setQ] = useState('')
     const [error, setError] = useState(null)
     const [plToDe, setPlToDe] = useState(true)
@@ -29,6 +29,7 @@ export default function DictionaryInput({ onSearchResult }) {
             }
             console.log(data)
             onSearchResult(data)
+            onWord(q)
         } catch (err) {
             console.error(err)
             setError('Wystąpił błąd podczas wyszukiwania')

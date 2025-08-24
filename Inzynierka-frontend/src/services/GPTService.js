@@ -19,6 +19,17 @@ class GPTService {
         );
         return response.data;
     }
+
+    static async generateDialogue(word) {
+        if (!word.trim())
+            throw new Error("Brak słowa do dialogu")
+        const response = await axios.post(
+            `${this.BASE_URL}/generate_dialogue/`,
+            {word},
+            {withCredentials: true}
+        )
+        return response.data;
+    }
 }
 
 export default GPTService;
