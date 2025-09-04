@@ -44,11 +44,35 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 class CategorySerializer(serializers.ModelSerializer):
+
+    owner = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = Category
-        fields = ('id', 'name', 'image')
+        fields = ('id', 'name', 'image', 'owner')
 
 class FlashcardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Flashcard
         fields = ('id', 'front', 'reverse', 'synonym', 'plural', 'article', 'color', 'example_sentence', 'example_sentence_translation', 'image', 'category', 'front_audio', 'example_sentence_audio')
+
+    # def validate(self, category):
+    #     user = self.context.get('request').user
+    #     if category.owner != user and not (user.is_staff or user.is_superuser):
+    #         raise serializers.ValidationError("Nie możesz dodawać fiszek do cudzej kategorii")
+    #     return category
+
+    def validate(self, attrs):
+        user = self.context['request'].user
+        category = attrs.get('category') or getattr(self.instance, 'category', None)
+
+        if category is None:
+            raise serializers.ValidationError("Wymagana kategoria.")
+
+        if user.is_staff or user.is_superuser:
+            return attrs
+
+        if category.owner != user:
+            return serializers.ValidationError("Nie masz dostępu do cudzej kategorii.")
+
+        return attrs

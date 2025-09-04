@@ -16,6 +16,9 @@ import DictionaryPage from "./pages/DictionaryPage.jsx";
 import TranslatePage from "./pages/TranslatePage.jsx";
 import GapFillPage from "./pages/GapFillPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
+import AddCategory from "./pages/AddCategory.jsx";
+import AddFlashcards from "./pages/AddFlashcards.jsx";
+
 
 function AppRoutes() {
 
@@ -71,6 +74,9 @@ function AppRoutes() {
                     <Route path="/slownik" element={renderLayout(<DictionaryPage />)} />
                     <Route path="/tlumaczenia" element={renderLayout(<TranslatePage />)} />
                     <Route path="/gap-fill" element={renderLayout(<GapFillPage />)}  />
+                    <Route path="/dodaj-kategorie" element={renderLayout(<AddCategory />)} />
+                    <Route path="/dodaj-fiszki" element={renderLayout(<AddFlashcards />)} />
+
                 </Route>
 
                 {UserService.adminOnly() && (

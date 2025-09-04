@@ -1,6 +1,8 @@
+from django.db.models import Q
 from rest_framework import status, viewsets
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import AllowAny, IsAuthenticated, SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
@@ -15,14 +17,42 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
+    # queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Category.objects.all()
+
+        if user.is_staff or user.is_superuser:
+            return queryset
+
+        if self.request.method in SAFE_METHODS:
+            return queryset.filter(Q(owner=user) | Q(owner__is_staff=True) | Q(owner__is_superuser=True))
+
+        return queryset.filter(owner=user)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
 class FlashcardViewSet(viewsets.ModelViewSet):
-    queryset = Flashcard.objects.select_related('category').all()
+    # queryset = Flashcard.objects.select_related('category').all()
     serializer_class = FlashcardSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Flashcard.objects.select_related('category')
+
+        if user.is_staff or user.is_superuser:
+            return queryset
+
+        if self.request.method in SAFE_METHODS:
+            return queryset.filter(Q(category__owner=user) | Q(category__owner__is_staff=True) | Q(category__owner__is_superuser=True))
+
+        return queryset.filter(owner=user)
+
 
 
 def set_jwt_token(response, token):
@@ -89,7 +119,16 @@ def me_view(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_flashcards_by_category(request, category_id):
-    flashcards = Flashcard.objects.filter(category=category_id)
+    user = request.user
+    # category = Category.objects.filter(pk=category_id)
+    category = get_object_or_404(Category.objects.select_related('owner'), id=category_id)
+
+    if not (user.is_staff or user.is_superuser or
+            category.owner == user or
+            (category.owner and (category.owner.is_staff or category.owner.is_superuser))):
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    flashcards = category.flashcards.all()
     serializer = FlashcardSerializer(flashcards, many=True, context={'request': request})
     return Response(serializer.data)
 

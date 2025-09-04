@@ -6,8 +6,12 @@ class CategoryService {
     static BASE_URL = `${this.BACKEND}/api`;
 
     static async getCategories() {
-        const response = await axios.get(`${this.BASE_URL}/categories`, { withCredentials: true });
+        const response = await axios.get(`${this.BASE_URL}/categories/`, { withCredentials: true });
         return response.data;
+    }
+
+    static async addCategory(data) {
+        await axios.post(`${this.BASE_URL}/categories/`, data, { withCredentials: true });
     }
 
 }

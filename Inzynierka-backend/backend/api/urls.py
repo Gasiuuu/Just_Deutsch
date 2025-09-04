@@ -11,5 +11,5 @@ urlpatterns = [
     path('me/', me_view, name='me' ),
     path('flashcards/', FlashcardViewSet.as_view({'get': 'list'}), name='flashcards'),
     path('flashcards/<int:category_id>/', get_flashcards_by_category, name='flashcards-by-category'),
-    path('categories/', CategoryViewSet.as_view({'get': 'list'}), name='categories'),
+    path('categories/', CategoryViewSet.as_view({'get': 'list', 'post': 'create'}), name='categories'),
 ]

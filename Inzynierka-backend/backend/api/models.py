@@ -1,9 +1,9 @@
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.files.base import ContentFile
 from django.db import models
 from io import BytesIO
 from gtts import gTTS
-
 
 class CustomUser(AbstractUser):
     ROLE_CHOICES = (
@@ -41,13 +41,18 @@ class CustomUser(AbstractUser):
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     image = models.ImageField(upload_to='category_images/', blank=True, null=True)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='categories', null=True)
 
     class Meta:
         verbose_name = 'Kategoria'
         verbose_name_plural = 'Kategorie'
 
+        constraints = [
+            models.UniqueConstraint(fields=['owner', 'name'], name='unique_category_name'),
+        ]
+
     def __str__(self):
-        return self.name
+        return f"{self.name} - {self.owner}"
 
 class Flashcard(models.Model):
     ARTICLE_CHOICES = (
@@ -63,8 +68,8 @@ class Flashcard(models.Model):
         ('żółty', 'Żółty'),
     )
 
-    front = models.CharField(max_length=100, unique=True)
-    reverse = models.CharField(max_length=100, unique=True)
+    front = models.CharField(max_length=100)
+    reverse = models.CharField(max_length=100)
     synonym = models.CharField(max_length=100, blank=True)
     plural = models.CharField(max_length=100, blank=True)
     article = models.CharField(max_length=100, choices=ARTICLE_CHOICES, blank=True)
@@ -79,6 +84,11 @@ class Flashcard(models.Model):
     class Meta:
         verbose_name = 'Fiszka'
         verbose_name_plural = 'Fiszki'
+
+        constraints = [
+            models.UniqueConstraint(fields=['category', 'front'], name='unique_front_per_category'),
+            models.UniqueConstraint(fields=['category', 'reverse'], name='unique_reverse_per_category'),
+        ]
 
     def __str__(self):
         return f"{self.category}: {self.front} - {self.reverse}"
