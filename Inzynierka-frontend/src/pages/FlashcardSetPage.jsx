@@ -1,9 +1,13 @@
 import React, {useEffect, useState} from 'react'
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import FlashcardService from "../services/FlashcardService.js";
 import { BiSolidLeftArrow } from "react-icons/bi";
 import { BiSolidRightArrow } from "react-icons/bi";
 import { IoVolumeMedium } from "react-icons/io5";
+import EmptySet from "../components/animations/EmptySet.jsx"
+import Login from "./Login/Login.module.css";
+import { IoMdAdd } from "react-icons/io";
+
 
 const colorMap = {
     niebieski: {
@@ -58,10 +62,25 @@ function FlashcardSetPage() {
 
     if(loading) return <p>Ładowanie...</p>;
     if(error) return <p>{error}</p>
-    if(flashcards.length === 0) return <p>Brak fiszek w tej kategorii</p>
+
+
+    if(flashcards.length === 0) return (
+        <div className="flex flex-col items-center justify-center">
+            <EmptySet />
+            <h1 className={Login.helloText}>
+                <p>Pusto! Dodaj fiszki do tego zestawu</p>
+            </h1>
+            <Link to={`/dodaj-fiszki/${categoryId}`}>
+                <button className="flex ml-auto px-5 py-2 items-center bg-[image:linear-gradient(45deg,#000080,#800080)] bg-[length:150%_auto] bg-[position:left_center] bg-no-repeat text-white  rounded-lg cursor-pointer transition-[background-position] duration-600 ease-in-out hover:bg-[position:right_center]">
+                    <IoMdAdd className="text-lg mr-2" /> Dodaj fiszki
+                </button>
+
+            </Link>
+        </div>
+    )
 
     const card = flashcards[currentIndex]
-    const { label, bg, border } = colorMap[card.color] || {label: '', bg: '', border: ''};
+    const {label, bg, border} = colorMap[card.color] || {label: '', bg: '', border: ''};
 
     const prevCard = () => {
         setCurrentIndex(i => Math.max(i - 1, 0))
