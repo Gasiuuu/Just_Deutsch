@@ -75,7 +75,9 @@ function AppRoutes() {
                     <Route path="/tlumaczenia" element={renderLayout(<TranslatePage />)} />
                     <Route path="/gap-fill" element={renderLayout(<GapFillPage />)}  />
                     <Route path="/dodaj-kategorie" element={renderLayout(<AddCategory />)} />
-                    <Route path="/dodaj-fiszki" element={renderLayout(<AddFlashcards />)} />
+                    <Route path="/wybierz-zestaw" element={renderLayout(<FlashcardsPage />)} />
+                    <Route path="/dodaj-fiszki/:categoryId" element={renderLayout(<AddFlashcards />)} />
+
 
                 </Route>
 

@@ -38,19 +38,19 @@ function AddCategory() {
     const handleSave = async () => {
         if (!name) {
             alert("Proszę podać nazwę kategorii")
+            return
         }
 
         try{
             const formData = new FormData()
             formData.append("name", name.trim())
-            formData.append("image", imageFile)
+            if (imageFile) formData.append("image", imageFile)
 
             await CategoryService.addCategory(formData)
             navigate("/fiszki")
         } catch(e) {
             alert("Nie udało się zapisać kategorii, spróbuj ponownie.", e)
         }
-
     }
 
 
@@ -94,14 +94,20 @@ function AddCategory() {
 
                 </div>
 
-                <input
-                    type="text"
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                    className="w-1/2 p-[10px] text-[16px] border-b-[1px] border-b-[#ccc] bg-[image:linear-gradient(to_right,#000080,#800080)] bg-no-repeat bg-[size:0%_2px] bg-[position:0_100%] transition-[background-size] duration-[800ms] ease-in-out focus:bg-[size:100%_2px] focus:outline-none mt-3 mb-3"
-
-                    placeholder="Nazwa kategorii"
-                />
+                <div className="relative w-1/2 mb-5">
+                    <input
+                        id="name"
+                        type="text"
+                        value={name}
+                        onChange={e => setName(e.target.value)}
+                        className="peer w-full p-[10px] text-[20px] border-b-[1px] border-b-[#ccc] bg-[image:linear-gradient(to_right,#000080,#800080)] bg-no-repeat bg-[size:0%_2px] bg-[position:0_100%] transition-[background-size] duration-[800ms] ease-in-out focus:bg-[size:100%_2px] focus:outline-none mt-3 mb-3 placeholder-transparent"
+                        placeholder=" "
+                    />
+                    <label htmlFor="name"
+                           className="absolute left-0 -top-1 text-gray-600 text-sm peer-placeholder-shown:text-[20px] peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-5.5 peer-placeholder-shown:left-2.5 transition-all peer-focus:-top-1 peer-focus:left-0 peer-focus:text-gray-600 peer-focus:text-sm">
+                        Nazwa kategorii <span className="text-red-500"> *</span>
+                    </label>
+                </div>
             </div>
 
             <div className="flex mt-15 items-center justify-center w-full gap-20">
@@ -114,13 +120,10 @@ function AddCategory() {
 
                 <button
                     onClick={handleSave}
-                    className="flex items-center justify-center text-center gap-2 px-8 py-4 hover:bg-green-600 transition text-white text-xl font-medium rounded-xl bg-green-500 cursor-pointer">
+                    className="flex items-center justify-center text-center gap-2 px-8 py-4 hover:bg-[#10A31B] transition text-white text-xl font-medium rounded-xl bg-[#11AB1E] cursor-pointer">
                     <MdOutlineSaveAlt/> Zapisz
                 </button>
-
             </div>
-
-
         </div>
     )
 }

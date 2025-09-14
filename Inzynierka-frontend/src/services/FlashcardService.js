@@ -17,6 +17,13 @@ class FlashcardService {
         return response.data;
     }
 
+    static async addFlashcard(data) {
+        const response = await axios.post(`${this.BASE_URL}/flashcards/`,
+            data,
+            { withCredentials: true });
+        return response.data;
+    }
+
 }
 
 export default FlashcardService;

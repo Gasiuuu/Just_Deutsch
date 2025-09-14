@@ -6,7 +6,7 @@ import {Link} from "react-router-dom";
 
 function FlashcardsMenu() {
     return (
-        <div className="w-40 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+        <div className="w-40 bg-white border border-gray-200 rounded-md shadow-lg">
             <Link to="/dodaj-kategorie">
                 <button
                     className="flex gap-2 w-full text-center px-4 py-3 hover:bg-gray-100 text-black font-medium">
@@ -15,7 +15,7 @@ function FlashcardsMenu() {
                 </button>
             </Link>
 
-            <Link to="/dodaj-fiszki">
+            <Link to="/wybierz-zestaw">
                 <button className="flex gap-2 w-full text-center px-4 py-3 hover:bg-gray-100 text-black font-medium">
                     <TbCardsFilled className="text-blue-500 w-6 h-6 mr-2"/> Fiszki
                 </button>

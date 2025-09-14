@@ -9,7 +9,7 @@ urlpatterns = [
     path('admin/', admin_only_view, name='admin'),
     path('user/', user_only_view, name='user'),
     path('me/', me_view, name='me' ),
-    path('flashcards/', FlashcardViewSet.as_view({'get': 'list'}), name='flashcards'),
+    path('flashcards/', FlashcardViewSet.as_view({'get': 'list', 'post': 'create'}), name='flashcards'),
     path('flashcards/<int:category_id>/', get_flashcards_by_category, name='flashcards-by-category'),
     path('categories/', CategoryViewSet.as_view({'get': 'list', 'post': 'create'}), name='categories'),
 ]
