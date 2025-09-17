@@ -14,6 +14,14 @@ class CategoryService {
         await axios.post(`${this.BASE_URL}/categories/`, data, { withCredentials: true });
     }
 
+    static async deleteCategory(id) {
+        await axios.delete(`${this.BASE_URL}/category/${id}`, { withCredentials: true });
+    }
+
+    static async editCategory(id, data) {
+        await axios.patch(`${this.BASE_URL}/category/${id}`, data, { withCredentials: true });
+    }
+
 }
 
 export default CategoryService;

@@ -2,20 +2,23 @@ import React, { useState, useEffect } from 'react'
 import CategoriesService from '../services/CategoryService.js';
 import { FaPlusCircle } from "react-icons/fa";
 import {Link, useLocation} from "react-router-dom";
-import FlashcardsMenu from "../components/FlashcardsMenu.jsx";
+import FlashcardsCreatingMenu from "../components/FlashcardsCreatingMenu.jsx";
 import UserStore from "../stores/UserStore.js";
 import { IoReturnUpBack } from "react-icons/io5";
+import { HiDotsVertical } from "react-icons/hi";
+import FlashcardMenu from "../components/FlashcardMenu.jsx";
 
 
 function FlashcardsPage() {
 
     const [categories, setCategories] = useState([]);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMenuOpen2, setIsMenuOpen2] = useState(null);
+    const toggleMenu = (id) => {setIsMenuOpen2(curr => (curr === id ? null : id))}
     const { user } = UserStore()
     const userId = user.id;
     const location = useLocation()
     const addingMode = location.pathname === "/wybierz-zestaw"
-
 
     useEffect(() => {
         fetchCategories()
@@ -60,7 +63,7 @@ function FlashcardsPage() {
                         isMenuOpen ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0'
                     }`}
                 >
-                    <FlashcardsMenu/>
+                    <FlashcardsCreatingMenu/>
 
                 </div>
                 </div>
@@ -81,7 +84,7 @@ function FlashcardsPage() {
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
                         {categories.map(cat =>{
                             const isOwned = !!userId && Number(cat.owner) === Number(userId)
-                            const notAllowed = addingMode && !isOwned
+                            const notAllowed = addingMode && !isOwned && user.role !== "admin"
 
                             const card = (
                             <div
@@ -130,23 +133,37 @@ function FlashcardsPage() {
                                 )
                             }
                             return (
-                                <Link key={cat.id} to={addingMode ? `/dodaj-fiszki/${cat.id}` : `/fiszki/${cat.id}`}>
-                                    <div
-                                        className="hover:shadow-xl hover:scale-102 duration-400 ease-in-out transition">
-                                    {card}
-                                    </div>
-                                </Link>
+                                <div className="relative hover:shadow-xl hover:scale-102 duration-400 ease-in-out transition">
+                                    <Link key={cat.id} to={addingMode ? `/dodaj-fiszki/${cat.id}` : `/fiszki/${cat.id}`}>
+                                        {card}
+                                    </Link>
+
+                                    {(userId === cat.owner || user.role === "admin")  && (
+                                        <div>
+                                            <button
+                                                onClick={() => toggleMenu(cat.id)}
+                                                className="absolute top-2 right-2 z-50 p-2 rounded-full bg-white/80 backdrop-blur hover:bg-white shadow hover:shadow-md transition duration-300">
+                                                <HiDotsVertical/>
+                                            </button>
+                                            <div
+                                                className={`origin-top absolute right-0 top-12 z-100 transform transition-all duration-300 ease-in-out ${
+                                                    isMenuOpen2 === cat.id ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0'
+                                                }`}
+                                            >
+                                                <FlashcardMenu id={cat.id} />
+
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             )
-                        }
-
-
-
-                )}
+                            }
+                        )}
+                    </div>
+                )
+            }
         </div>
     )
-}
-</div>
-)
 }
 
 export default FlashcardsPage

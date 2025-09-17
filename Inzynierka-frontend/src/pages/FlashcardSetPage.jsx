@@ -3,7 +3,7 @@ import {Link, useParams} from "react-router-dom";
 import FlashcardService from "../services/FlashcardService.js";
 import { BiSolidLeftArrow } from "react-icons/bi";
 import { BiSolidRightArrow } from "react-icons/bi";
-import { IoVolumeMedium } from "react-icons/io5";
+import {IoReturnUpBack, IoVolumeMedium} from "react-icons/io5";
 import EmptySet from "../components/animations/EmptySet.jsx"
 import Login from "./Login/Login.module.css";
 import { IoMdAdd } from "react-icons/io";
@@ -66,16 +66,25 @@ function FlashcardSetPage() {
 
     if(flashcards.length === 0) return (
         <div className="flex flex-col items-center justify-center">
-            <EmptySet />
+            <EmptySet/>
             <h1 className={Login.helloText}>
                 <p>Pusto! Dodaj fiszki do tego zestawu</p>
             </h1>
-            <Link to={`/dodaj-fiszki/${categoryId}`}>
-                <button className="flex ml-auto px-5 py-2 items-center bg-[image:linear-gradient(45deg,#000080,#800080)] bg-[length:150%_auto] bg-[position:left_center] bg-no-repeat text-white  rounded-lg cursor-pointer transition-[background-position] duration-600 ease-in-out hover:bg-[position:right_center]">
-                    <IoMdAdd className="text-lg mr-2" /> Dodaj fiszki
-                </button>
+            <div className="flex flex-row gap-3 mx-auto">
+                <Link to="/fiszki">
+                    <button
+                        className="flex items-center justify-center text-center px-5 py-2 hover:bg-gray-300 transition text-black font-medium border-1 border-gray-300 rounded-xl cursor-pointer bg-gray-200">
+                        <IoReturnUpBack className="text-lg mr-2"/> Powrót
+                    </button>
+                </Link>
+                <Link to={`/dodaj-fiszki/${categoryId}`}>
+                    <button
+                        className="flex  px-5 py-2 items-center bg-[image:linear-gradient(45deg,#000080,#800080)] bg-[length:150%_auto] bg-[position:left_center] bg-no-repeat text-white  rounded-lg cursor-pointer transition-[background-position] duration-600 ease-in-out hover:bg-[position:right_center]">
+                        <IoMdAdd className="text-lg mr-2"/> Dodaj fiszki
+                    </button>
+                </Link>
+            </div>
 
-            </Link>
         </div>
     )
 

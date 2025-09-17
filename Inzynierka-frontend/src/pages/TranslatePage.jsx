@@ -60,7 +60,7 @@ function TranslatePage() {
 
 
     return (
-        <div className="flex flex-col justify-center items-center">
+        <div className="flex flex-col justify-center items-center px-20">
             <style>{slideIn}</style>
             <div className="bg-gray-100 rounded-md p-5 mt-10 text-3xl">
                 {isClicked ? (

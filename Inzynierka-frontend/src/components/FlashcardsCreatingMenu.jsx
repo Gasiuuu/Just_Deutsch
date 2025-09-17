@@ -4,7 +4,7 @@ import { TbCardsFilled } from "react-icons/tb";
 import {Link} from "react-router-dom";
 
 
-function FlashcardsMenu() {
+function FlashcardsCreatingMenu() {
     return (
         <div className="w-40 bg-white border border-gray-200 rounded-md shadow-lg">
             <Link to="/dodaj-kategorie">
@@ -20,10 +20,8 @@ function FlashcardsMenu() {
                     <TbCardsFilled className="text-blue-500 w-6 h-6 mr-2"/> Fiszki
                 </button>
             </Link>
-
-
         </div>
     )
 }
 
-export default FlashcardsMenu;
+export default FlashcardsCreatingMenu;
