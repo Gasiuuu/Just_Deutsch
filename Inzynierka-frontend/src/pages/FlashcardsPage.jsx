@@ -7,6 +7,7 @@ import UserStore from "../stores/UserStore.js";
 import { IoReturnUpBack } from "react-icons/io5";
 import { HiDotsVertical } from "react-icons/hi";
 import FlashcardMenu from "../components/FlashcardMenu.jsx";
+import { Modal, Box, Typography, Button, Stack } from '@mui/material';
 
 
 function FlashcardsPage() {
@@ -19,6 +20,10 @@ function FlashcardsPage() {
     const userId = user.id;
     const location = useLocation()
     const addingMode = location.pathname === "/wybierz-zestaw"
+
+    const [confirmOpen, setConfirmOpen] = useState(false)
+    const [deleting, setDeleting] = useState(false)
+    const [selectedCategory, setSelectedCategory] = useState(null);
 
     useEffect(() => {
         fetchCategories()
@@ -33,6 +38,35 @@ function FlashcardsPage() {
             console.error('Błąd wczytywania kategorii: ', error);
         }
     }
+
+    const askDelete = (cat) => {
+        setSelectedCategory(cat)
+        setConfirmOpen(true)
+        setIsMenuOpen2(null)
+    }
+
+    const confirmDelete = async () => {
+        if (!selectedCategory) return
+
+        try {
+            setDeleting(true)
+            await CategoriesService.deleteCategory(selectedCategory.id)
+            setConfirmOpen(false)
+            setSelectedCategory(null)
+            await fetchCategories()
+        } catch (e) {
+            console.error("Błąd usuwania kategorii: ", e)
+        } finally {
+            setDeleting(false)
+        }
+    }
+
+    const closeConfirm = () => {
+        if (deleting) return
+        setConfirmOpen(false)
+        setSelectedCategory(null)
+    }
+
 
     return (
         <div className="p-6">
@@ -66,7 +100,67 @@ function FlashcardsPage() {
                     <FlashcardsCreatingMenu/>
 
                 </div>
-                </div>
+            </div>
+
+            <Modal
+                open={confirmOpen}
+                onClose={closeConfirm}
+                aria-labelledby="delete-category-title"
+                aria-describedby="delete-category-description"
+            >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 500,
+                        bgcolor: 'white',
+                        borderRadius: 2,
+                        boxShadow: 24,
+                        p: 3
+                    }}
+                >
+                    <Typography
+                        id="delete-category-title"
+                        variant="h6"
+                        sx={{ fontWeight: 'bold' }}
+                    >
+                        Usuwanie kategorii
+                    </Typography>
+
+                    <Typography
+                        id="delete-category-description"
+                        sx={{ mt: 3 }}
+                    >
+                        Czy na pewno chcesz usunąć tę kategorię?<br></br>
+                        Tej operacji nie można już cofnąć.
+                    </Typography>
+
+                    <Stack
+                        direction="row"
+                        justifyContent="flex-end"
+                        spacing={2}
+                        sx={{ mt: 3 }}
+                    >
+                        <Button
+                            onClick={closeConfirm}
+                            disabled={deleting}
+                            sx={{ color: 'black' }}
+                        >
+                            Anuluj
+                        </Button>
+                        <Button
+                            onClick={confirmDelete}
+                            variant="contained"
+                            color="error"
+                            disabled={deleting}
+                        >
+                            {deleting ? "Usuwanie..." : "Usuń"}
+                        </Button>
+                    </Stack>
+                </Box>
+            </Modal>
 
             {categories.length === 0
                 ? <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
@@ -150,8 +244,7 @@ function FlashcardsPage() {
                                                     isMenuOpen2 === cat.id ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0'
                                                 }`}
                                             >
-                                                <FlashcardMenu id={cat.id} />
-
+                                                <FlashcardMenu id={cat.id} onDelete={() => askDelete(cat)} />
                                             </div>
                                         </div>
                                     )}

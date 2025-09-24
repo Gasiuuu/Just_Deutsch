@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react'
-import { FaImage } from "react-icons/fa6";
 import { IoReturnUpBack } from "react-icons/io5";
 import { MdOutlineSaveAlt } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
@@ -13,6 +12,7 @@ function AddCategory() {
     const [imageFile, setImageFile] = useState(null);
     const [name, setName] = useState("");
     const navigate = useNavigate();
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         return () => {
@@ -42,6 +42,7 @@ function AddCategory() {
         }
 
         try{
+            setSaving(true)
             const formData = new FormData()
             formData.append("name", name.trim())
             if (imageFile) formData.append("image", imageFile)
@@ -121,7 +122,7 @@ function AddCategory() {
                 <button
                     onClick={handleSave}
                     className="flex items-center justify-center text-center gap-2 px-8 py-4 hover:bg-[#10A31B] transition text-white text-xl font-medium rounded-xl bg-[#11AB1E] cursor-pointer">
-                    <MdOutlineSaveAlt/> Zapisz
+                    <MdOutlineSaveAlt/> {saving? "Zapisywanie..." : "Zapisz"}
                 </button>
             </div>
         </div>
