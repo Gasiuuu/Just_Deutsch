@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react'
-import { IoReturnUpBack } from "react-icons/io5";
 import { MdOutlineSaveAlt } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import { FcImageFile } from "react-icons/fc";
 import CategoryService from "../services/CategoryService.js";
+import {IoIosArrowBack} from "react-icons/io";
 
 
 function AddCategory() {
@@ -115,7 +115,7 @@ function AddCategory() {
                 <Link to="/fiszki">
                     <button
                         className="flex items-center justify-center text-center gap-2 px-8 py-4 hover:bg-gray-300 transition text-black text-xl font-medium border-1 border-gray-300 rounded-xl cursor-pointer bg-gray-200">
-                        <IoReturnUpBack/> Powrót
+                        <IoIosArrowBack /> Powrót
                     </button>
                 </Link>
 

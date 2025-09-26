@@ -133,7 +133,7 @@ function FlashcardsPage() {
                         id="delete-category-description"
                         sx={{ mt: 3 }}
                     >
-                        Czy na pewno chcesz usunąć tę kategorię?<br></br>
+                        Czy na pewno chcesz usunąć <strong>{selectedCategory?.name ? `"${selectedCategory.name}"` : 'tę kategorię'}</strong>?
                         Tej operacji nie można już cofnąć.
                     </Typography>
 

@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react'
 import {FcImageFile} from "react-icons/fc";
 import {Link, useNavigate} from "react-router-dom";
-import {IoReturnUpBack} from "react-icons/io5";
 import {MdOutlineSaveAlt} from "react-icons/md";
 import { MdDataSaverOn } from "react-icons/md";
 import FlashcardService from "../services/FlashcardService.js";
 import { useParams } from "react-router-dom";
+import {IoIosArrowBack} from "react-icons/io";
 
 function AddFlashcards() {
 
@@ -21,7 +21,7 @@ function AddFlashcards() {
     const [imageUrl, setImageUrl] = useState(null)
 
     const navigate = useNavigate();
-    const id  = useParams();
+    const { categoryId }  = useParams();
 
 
     useEffect(() => {
@@ -62,7 +62,7 @@ function AddFlashcards() {
             formData.append("example_sentence", exampleSentence)
             formData.append("example_sentence_translation", exampleSentenceTranslation)
             if (image) formData.append("image", image)
-            formData.append("category", id.categoryId)
+            formData.append("category", categoryId)
 
             await FlashcardService.addFlashcard(formData)
 
@@ -244,7 +244,7 @@ function AddFlashcards() {
                 <Link to="/fiszki">
                     <button
                         className="flex items-center justify-center text-center gap-2 px-8 py-4 hover:bg-gray-300 transition text-black text-xl font-medium border-1 border-gray-300 rounded-xl cursor-pointer bg-gray-200">
-                        <IoReturnUpBack/> Powrót
+                        <IoIosArrowBack /> Powrót
                     </button>
                 </Link>
 

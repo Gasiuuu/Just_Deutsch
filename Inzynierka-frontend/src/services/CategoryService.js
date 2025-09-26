@@ -10,6 +10,11 @@ class CategoryService {
         return response.data;
     }
 
+    static async getCategoryById(id) {
+        const response = await axios.get(`${this.BASE_URL}/category/${id}`, { withCredentials: true });
+        return response.data
+    }
+
     static async addCategory(data) {
         await axios.post(`${this.BASE_URL}/categories/`, data, { withCredentials: true });
     }

@@ -3,10 +3,10 @@ import {Link, useParams} from "react-router-dom";
 import FlashcardService from "../services/FlashcardService.js";
 import { BiSolidLeftArrow } from "react-icons/bi";
 import { BiSolidRightArrow } from "react-icons/bi";
-import {IoReturnUpBack, IoVolumeMedium} from "react-icons/io5";
+import { IoVolumeMedium } from "react-icons/io5";
 import EmptySet from "../components/animations/EmptySet.jsx"
 import Login from "./Login/Login.module.css";
-import { IoMdAdd } from "react-icons/io";
+import {IoIosArrowBack, IoMdAdd} from "react-icons/io";
 
 
 const colorMap = {
@@ -74,7 +74,7 @@ function FlashcardSetPage() {
                 <Link to="/fiszki">
                     <button
                         className="flex items-center justify-center text-center px-5 py-2 hover:bg-gray-300 transition text-black font-medium border-1 border-gray-300 rounded-xl cursor-pointer bg-gray-200">
-                        <IoReturnUpBack className="text-lg mr-2"/> Powrót
+                        <IoIosArrowBack className="text-lg mr-2"/> Powrót
                     </button>
                 </Link>
                 <Link to={`/dodaj-fiszki/${categoryId}`}>
