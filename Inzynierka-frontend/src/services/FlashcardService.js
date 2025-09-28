@@ -24,6 +24,12 @@ class FlashcardService {
         return response.data;
     }
 
+    static async deleteFlashcard(id) {
+        const response = await axios.delete(`${this.BASE_URL}/flashcard/${id}`,
+            { withCredentials: true });
+        return response.data;
+    }
+
 }
 
 export default FlashcardService;

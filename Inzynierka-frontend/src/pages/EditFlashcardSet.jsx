@@ -7,6 +7,7 @@ import { FiEdit } from 'react-icons/fi'
 import {MdDelete, MdOutlineSaveAlt} from 'react-icons/md'
 import { IoIosArrowBack } from "react-icons/io";
 import CategoryService from "../services/CategoryService.js";
+import {Box, Button, Modal, Stack, Typography} from "@mui/material";
 
 
 function EditFlashcardSet() {
@@ -19,11 +20,15 @@ function EditFlashcardSet() {
     const { categoryId }= useParams()
     const navigate = useNavigate();
 
+    const [confirmOpen, setConfirmOpen] = useState(false)
+    const [deleting, setDeleting] = useState(false)
+    const [selectedFlashcard, setSelectedFlashcard] = useState(null);
+
     useEffect(() => {
         fetchCategory()
         fetchFlashcards()
         setLoading(false)
-    }, [])
+    }, [flashcards])
 
     const fetchCategory = async () => {
         try {
@@ -74,6 +79,33 @@ function EditFlashcardSet() {
         } catch (e) {
             console.error("Wystąpił błąd przy nadpisywaniu kategorii: ", e)
         }
+    }
+
+    const handleDeleteFlashcard = async (flashcard) => {
+        setSelectedFlashcard(flashcard)
+        setConfirmOpen(true)
+    }
+
+    const confirmDelete = async () => {
+        if (!selectedFlashcard) return
+
+        try {
+            setDeleting(true)
+            await FlashcardService.deleteFlashcard(selectedFlashcard.id)
+            setConfirmOpen(false)
+            setSelectedFlashcard(null)
+            await fetchCategory()
+        } catch (e) {
+            console.error("Błąd usuwania fiszki: ", e)
+        } finally {
+            setDeleting(false)
+        }
+    }
+
+    const closeConfirm = () => {
+        if (deleting) return
+        setConfirmOpen(false)
+        setSelectedFlashcard(null)
     }
 
     if (loading) {
@@ -179,6 +211,66 @@ function EditFlashcardSet() {
                 </div>
             </div>
 
+            <Modal
+                open={confirmOpen}
+                onClose={closeConfirm}
+                aria-labelledby="delete-category-title"
+                aria-describedby="delete-category-description"
+            >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 500,
+                        bgcolor: 'white',
+                        borderRadius: 2,
+                        boxShadow: 24,
+                        p: 3
+                    }}
+                >
+                    <Typography
+                        id="delete-category-title"
+                        variant="h6"
+                        sx={{ fontWeight: 'bold' }}
+                    >
+                        Usuwanie kategorii
+                    </Typography>
+
+                    <Typography
+                        id="delete-category-description"
+                        sx={{ mt: 3 }}
+                    >
+                        Czy na pewno chcesz usunąć fiszkę <strong>{selectedFlashcard?.front ? `"${selectedFlashcard.front}"` : 'tę kategorię'}</strong>?
+                        Tej operacji nie można już cofnąć.
+                    </Typography>
+
+                    <Stack
+                        direction="row"
+                        justifyContent="flex-end"
+                        spacing={2}
+                        sx={{ mt: 3 }}
+                    >
+                        <Button
+                            onClick={closeConfirm}
+                            disabled={deleting}
+                            sx={{ color: 'black' }}
+                        >
+                            Anuluj
+                        </Button>
+                        <Button
+                            onClick={confirmDelete}
+                            variant="contained"
+                            color="error"
+                            disabled={deleting}
+                        >
+                            {deleting ? "Usuwanie..." : "Usuń"}
+                        </Button>
+                    </Stack>
+                </Box>
+            </Modal>
+
             {flashcards.length !== 0 ? (
                 <div className="w-3/4 shadow-md rounded-2xl mx-auto mt-20 mb-20 p-5">
                     {flashcards.map(flashcard => (
@@ -189,8 +281,12 @@ function EditFlashcardSet() {
                             <p>{flashcard.front}</p>
                             <p>{flashcard.reverse}</p>
                             <div className="flex flex-row gap-3">
-                                <FiEdit className="text-blue-500 w-6 h-6 mr-2"/>
-                                <MdDelete className="text-red-500 w-6 h-6 mr-2"/>
+                                <button>
+                                    <FiEdit className="text-blue-500 w-6 h-6 mr-2"/>
+                                </button>
+                                <button className="cursor-pointer" onClick={() => handleDeleteFlashcard(flashcard)}>
+                                    <MdDelete className="text-red-500 w-6 h-6 mr-2"/>
+                                </button>
                             </div>
                         </div>
                     ))}
