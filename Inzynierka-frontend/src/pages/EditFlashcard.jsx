@@ -2,29 +2,34 @@ import React, {useEffect, useState} from 'react'
 import {FcImageFile} from "react-icons/fc";
 import {Link, useNavigate} from "react-router-dom";
 import {MdOutlineSaveAlt} from "react-icons/md";
-import { MdDataSaverOn } from "react-icons/md";
 import FlashcardService from "../services/FlashcardService.js";
 import { useParams } from "react-router-dom";
 import {IoIosArrowBack} from "react-icons/io";
 
-function AddFlashcards() {
+function EditFlashcard() {
 
-    const [front, setFront] = useState("")
-    const [reverse, setReverse] = useState("")
-    const [synonym, setSynonym] = useState("")
-    const [plural, setPlural] = useState("")
-    const [article, setArticle] = useState("")
-    const [color, setColor] = useState("")
-    const [exampleSentence, setExampleSentence] = useState("")
-    const [exampleSentenceTranslation, setExampleSentenceTranslation] = useState("")
-    const [image, setImage] = useState(null)
+    const [flashcard, setFlashcard] = useState({
+        front: "",
+        reverse: "",
+        synonym: "",
+        plural: "",
+        article: "",
+        color: "",
+        example_sentence: "",
+        example_sentence_translation: "",
+        image: null,
+        category: "",
+    });
+
+    const [imageFile, setImageFile] = useState(null)
     const [imageUrl, setImageUrl] = useState(null)
 
     const navigate = useNavigate();
-    const { categoryId }  = useParams();
+    const { flashcardId } = useParams();
 
 
     useEffect(() => {
+        fetchFlashcard()
         return () => {
             if (imageUrl) {
                 URL.revokeObjectURL(imageUrl)
@@ -32,48 +37,54 @@ function AddFlashcards() {
         }
     }, [])
 
+    const fetchFlashcard = async () => {
+        try {
+            const response = await FlashcardService.getFlashcardById(flashcardId)
+            console.log('Otrzymano fiszkę: ', response)
+            setFlashcard(response)
+        } catch(error) {
+            console.error('Błąd wczytywania fiszki: ', error);
+        }
+    }
+
+    const handleDeleteImage = () => {
+        setFlashcard((prev) => ({...prev, image: null}))
+        setImageFile(null)
+    }
+
     const onFileChange = (e) => {
         const file = e.target.files[0];
+        setImageFile(file)
         const url = URL.createObjectURL(file);
-        setImageUrl(url);
-        setImage(file);
-        e.target.value = ""
+        setImageUrl(url)
+        setFlashcard((prev) => ({...prev, image: url}))
     }
 
-    const handleDelete = () => {
-        setImageUrl(null);
-        setImage(null);
+    const handleChange = (e) => {
+        const { name, value } = e.target
+        setFlashcard((prev) => ({...prev, [name]: value}))
     }
 
-    const handleSave = async (mode) => {
-        if (!front && !reverse) {
-            alert("Proszę uzupełnić wymagane pola")
-            return
-        }
+    const handleSave = async () => {
 
         try {
             const formData = new FormData()
-            formData.append("front", front)
-            formData.append("reverse", reverse)
-            formData.append("synonym", synonym)
-            formData.append("plural", plural)
-            formData.append("article", article)
-            formData.append("color", color)
-            formData.append("example_sentence", exampleSentence)
-            formData.append("example_sentence_translation", exampleSentenceTranslation)
-            if (image) formData.append("image", image)
-            formData.append("category", categoryId)
+            formData.append("front", flashcard.front)
+            formData.append("reverse", flashcard.reverse)
+            formData.append("synonym", flashcard.synonym)
+            formData.append("plural", flashcard.plural)
+            formData.append("article", flashcard.article)
+            formData.append("color", flashcard.color)
+            formData.append("example_sentence", flashcard.example_sentence)
+            formData.append("example_sentence_translation", flashcard.example_sentence_translation)
+            if (imageFile) formData.append("image", imageFile)
+            if (imageFile === null && flashcard.image === null) formData.append("image", "")
 
-            await FlashcardService.addFlashcard(formData)
-
-            if (mode === "back") {
-                navigate("/fiszki")
-            } else if (mode === "stay") {
-                navigate(0)
-            }
+            await FlashcardService.editFlashcard(flashcardId, formData)
+            navigate(`/edytuj-zestaw/${flashcard.category}`)
 
         } catch(e) {
-            alert("Nie udało się zapisać fiszki, spróbuj ponownie.", e)
+            alert("Nie udało się edytować fiszki, spróbuj ponownie.", e)
         }
     }
 
@@ -86,15 +97,15 @@ function AddFlashcards() {
 
             <div className="flex flex-col items-center justify-center">
                 <div className="border-1 border-gray-300 rounded-2xl aspect-square text-7xl overflow-hidden">
-                    {imageUrl ? (
-                            <img src={imageUrl} alt="Podgląd zdjęcia" className="w-50 h-50 object-cover object-center"/>
+                    {flashcard.image ? (
+                            <img src={flashcard.image} alt="Podgląd zdjęcia" className="w-50 h-50 object-cover object-center"/>
                         ) :
                         <FcImageFile className="w-50 h-50 p-8"/>
                     }
                 </div>
-                <button onClick={handleDelete}
+                <button onClick={handleDeleteImage}
                         className={`w-full h-full px-4 py-2 transition-all duration-500 ease-in-out
-                    ${imageUrl ? "opacity-100 translate-y-0 cursor-pointer" : "opacity-0 -translate-y-3 cursor-auto"}`}
+                    ${flashcard.image ? "opacity-100 translate-y-0 cursor-pointer" : "opacity-0 -translate-y-3 cursor-auto"}`}
                 >
                     Usuń zdjęcie
                 </button>
@@ -117,9 +128,10 @@ function AddFlashcards() {
                 <div className="relative w-1/2 mb-5">
                     <input
                         id="front"
+                        name="front"
                         type="text"
-                        value={front}
-                        onChange={e => setFront(e.target.value)}
+                        value={flashcard.front}
+                        onChange={handleChange}
                         className="peer w-full p-[10px] text-[20px] border-b-[1px] border-b-[#ccc] bg-[image:linear-gradient(to_right,#000080,#800080)] bg-no-repeat bg-[size:0%_2px] bg-[position:0_100%] transition-[background-size] duration-[800ms] ease-in-out focus:bg-[size:100%_2px] focus:outline-none mt-3 mb-3 placeholder-transparent"
                         placeholder=" "
                     />
@@ -131,9 +143,10 @@ function AddFlashcards() {
                 <div className="relative w-1/2 mb-5">
                     <input
                         id="reverse"
+                        name="reverse"
                         type="text"
-                        value={reverse}
-                        onChange={e => setReverse(e.target.value)}
+                        value={flashcard.reverse}
+                        onChange={handleChange}
                         className="peer w-full p-[10px] text-[20px] border-b-[1px] border-b-[#ccc] bg-[image:linear-gradient(to_right,#000080,#800080)] bg-no-repeat bg-[size:0%_2px] bg-[position:0_100%] transition-[background-size] duration-[800ms] ease-in-out focus:bg-[size:100%_2px] focus:outline-none mt-3 mb-3 placeholder-transparent"
                         placeholder=" "
                     />
@@ -149,8 +162,9 @@ function AddFlashcards() {
                     </label>
                     <select
                         id="article"
-                        value={article}
-                        onChange={e => setArticle(e.target.value)}
+                        name="article"
+                        value={flashcard.article}
+                        onChange={handleChange}
                         className="w-full p-[10px] text-[20px] border-b-1 border-b-[#ccc] focus:outline-none"
                     >
                         <option value="">———</option>
@@ -166,8 +180,9 @@ function AddFlashcards() {
                     </label>
                     <select
                         id="color"
-                        value={color}
-                        onChange={e => setColor(e.target.value)}
+                        name="color"
+                        value={flashcard.color}
+                        onChange={handleChange}
                         className="w-full p-[10px] text-[20px] border-b-1 border-b-[#ccc] focus:outline-none"
                     >
                         <option value="" disabled>———</option>
@@ -181,9 +196,10 @@ function AddFlashcards() {
                 <div className="relative w-1/2 mb-5">
                     <input
                         id="synonym"
+                        name="synonym"
                         type="text"
-                        value={synonym}
-                        onChange={e => setSynonym(e.target.value)}
+                        value={flashcard.synonym}
+                        onChange={handleChange}
                         className="peer w-full p-[10px] text-[20px] border-b-[1px] border-b-[#ccc] bg-[image:linear-gradient(to_right,#000080,#800080)] bg-no-repeat bg-[size:0%_2px] bg-[position:0_100%] transition-[background-size] duration-[800ms] ease-in-out focus:bg-[size:100%_2px] focus:outline-none mt-3 mb-3 placeholder-transparent"
                         placeholder=" "
                     />
@@ -196,9 +212,10 @@ function AddFlashcards() {
                 <div className="relative w-1/2 mb-5">
                     <input
                         id="plural"
+                        name="plural"
                         type="text"
-                        value={plural}
-                        onChange={e => setPlural(e.target.value)}
+                        value={flashcard.plural}
+                        onChange={handleChange}
                         className="peer w-full p-[10px] text-[20px] border-b-[1px] border-b-[#ccc] bg-[image:linear-gradient(to_right,#000080,#800080)] bg-no-repeat bg-[size:0%_2px] bg-[position:0_100%] transition-[background-size] duration-[800ms] ease-in-out focus:bg-[size:100%_2px] focus:outline-none mt-3 mb-3 placeholder-transparent"
                         placeholder=" "
                     />
@@ -211,9 +228,10 @@ function AddFlashcards() {
                 <div className="relative w-1/2 mb-5">
                     <input
                         id="example_sentence"
+                        name="example_sentence"
                         type="text"
-                        value={exampleSentence}
-                        onChange={e => setExampleSentence(e.target.value)}
+                        value={flashcard.example_sentence}
+                        onChange={handleChange}
                         className="peer w-full p-[10px] text-[20px] border-b-[1px] border-b-[#ccc] bg-[image:linear-gradient(to_right,#000080,#800080)] bg-no-repeat bg-[size:0%_2px] bg-[position:0_100%] transition-[background-size] duration-[800ms] ease-in-out focus:bg-[size:100%_2px] focus:outline-none mt-3 mb-3 placeholder-transparent"
                         placeholder=" "
                     />
@@ -226,9 +244,10 @@ function AddFlashcards() {
                 <div className="relative w-1/2 mb-5">
                     <input
                         id="example_sentence_translation"
+                        name="example_sentence_translation"
                         type="text"
-                        value={exampleSentenceTranslation}
-                        onChange={e => setExampleSentenceTranslation(e.target.value)}
+                        value={flashcard.example_sentence_translation}
+                        onChange={handleChange}
                         className="peer w-full p-[10px] text-[20px] border-b-[1px] border-b-[#ccc] bg-[image:linear-gradient(to_right,#000080,#800080)] bg-no-repeat bg-[size:0%_2px] bg-[position:0_100%] transition-[background-size] duration-[800ms] ease-in-out focus:bg-[size:100%_2px] focus:outline-none mt-3 mb-3 placeholder-transparent"
                         placeholder=" "
                     />
@@ -247,15 +266,8 @@ function AddFlashcards() {
                         <IoIosArrowBack /> Powrót
                     </button>
                 </Link>
-
                 <button
-                    onClick={() => handleSave("stay")}
-                    className="flex items-center justify-center text-center gap-2 px-8 py-4 hover:bg-[#0666BA] transition text-white text-xl font-medium border-1 border-gray-300 rounded-xl cursor-pointer bg-[#086BC2]">
-                    <MdDataSaverOn/> Zapisz i kontynuuj
-                </button>
-
-                <button
-                    onClick={() => handleSave("back")}
+                    onClick={() => handleSave()}
                     className="flex items-center justify-center text-center gap-2 px-8 py-4 hover:bg-[#10A31B] transition text-white text-xl font-medium rounded-xl bg-[#11AB1E] cursor-pointer">
                     <MdOutlineSaveAlt/> Zapisz
                 </button>
@@ -265,4 +277,4 @@ function AddFlashcards() {
     )
 }
 
-export default AddFlashcards
+export default EditFlashcard

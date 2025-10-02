@@ -17,6 +17,12 @@ class FlashcardService {
         return response.data;
     }
 
+    static async getFlashcardById(id) {
+        const response = await axios.get(`${this.BASE_URL}/flashcard/${id}/`,
+            {withCredentials: true });
+        return response.data;
+    }
+
     static async addFlashcard(data) {
         const response = await axios.post(`${this.BASE_URL}/flashcards/`,
             data,
@@ -24,12 +30,13 @@ class FlashcardService {
         return response.data;
     }
 
-    static async deleteFlashcard(id) {
-        const response = await axios.delete(`${this.BASE_URL}/flashcard/${id}`,
-            { withCredentials: true });
-        return response.data;
+    static async editFlashcard(id, data) {
+        await axios.patch(`${this.BASE_URL}/flashcard/${id}/`, data, { withCredentials: true })
     }
 
+    static async deleteFlashcard(id) {
+        await axios.delete(`${this.BASE_URL}/flashcard/${id}/`, { withCredentials: true });
+    }
 }
 
 export default FlashcardService;

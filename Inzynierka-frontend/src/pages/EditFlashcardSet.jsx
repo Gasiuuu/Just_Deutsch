@@ -5,7 +5,7 @@ import {Link, useNavigate, useParams} from "react-router-dom";
 import {FcImageFile} from "react-icons/fc";
 import { FiEdit } from 'react-icons/fi'
 import {MdDelete, MdOutlineSaveAlt} from 'react-icons/md'
-import { IoIosArrowBack } from "react-icons/io";
+import {IoIosArrowBack, IoMdAdd} from "react-icons/io";
 import CategoryService from "../services/CategoryService.js";
 import {Box, Button, Modal, Stack, Typography} from "@mui/material";
 
@@ -28,7 +28,7 @@ function EditFlashcardSet() {
         fetchCategory()
         fetchFlashcards()
         setLoading(false)
-    }, [flashcards])
+    }, [])
 
     const fetchCategory = async () => {
         try {
@@ -94,7 +94,7 @@ function EditFlashcardSet() {
             await FlashcardService.deleteFlashcard(selectedFlashcard.id)
             setConfirmOpen(false)
             setSelectedFlashcard(null)
-            await fetchCategory()
+            await fetchFlashcards()
         } catch (e) {
             console.error("Błąd usuwania fiszki: ", e)
         } finally {
@@ -281,9 +281,11 @@ function EditFlashcardSet() {
                             <p>{flashcard.front}</p>
                             <p>{flashcard.reverse}</p>
                             <div className="flex flex-row gap-3">
-                                <button>
-                                    <FiEdit className="text-blue-500 w-6 h-6 mr-2"/>
-                                </button>
+                                <Link to={`/edytuj-fiszke/${flashcard.id}`}>
+                                    <button className="cursor-pointer">
+                                        <FiEdit className="text-blue-500 w-6 h-6 mr-2"/>
+                                    </button>
+                                </Link>
                                 <button className="cursor-pointer" onClick={() => handleDeleteFlashcard(flashcard)}>
                                     <MdDelete className="text-red-500 w-6 h-6 mr-2"/>
                                 </button>
@@ -292,8 +294,16 @@ function EditFlashcardSet() {
                     ))}
                 </div>
             ) : (
-                <div className="mx-auto mt-20">
-                    <p className="text-center">pusto, dodaj coś</p>
+                <div className="flex flex-col w-3/4 shadow-md rounded-2xl justify-center mx-auto items-center mt-20 mb-20 p-5">
+                    <div className="py-5 text-xl">
+                        Zestaw jest pusty, dodaj fiszki
+                    </div>
+                    <Link to={`/dodaj-fiszki/${categoryId}`}>
+                        <button
+                            className="flex px-5 py-2 items-center bg-[image:linear-gradient(45deg,#000080,#800080)] bg-[length:150%_auto] bg-[position:left_center] bg-no-repeat text-white  rounded-lg cursor-pointer transition-[background-position] duration-600 ease-in-out hover:bg-[position:right_center]">
+                            <IoMdAdd className="text-lg mr-2"/> Dodaj fiszki
+                        </button>
+                    </Link>
                 </div>
             )}
 
@@ -302,7 +312,7 @@ function EditFlashcardSet() {
                 <Link to="/fiszki">
                     <button
                         className="flex items-center justify-center text-center gap-2 px-8 py-4 hover:bg-gray-300 transition text-black text-xl font-medium border-1 border-gray-300 rounded-xl cursor-pointer bg-gray-200">
-                        <IoIosArrowBack /> Powrót
+                        <IoIosArrowBack/> Powrót
                     </button>
                 </Link>
 

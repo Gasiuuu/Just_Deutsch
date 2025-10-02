@@ -19,6 +19,7 @@ import NotFoundPage from "./pages/NotFoundPage.jsx";
 import AddCategory from "./pages/AddCategory.jsx";
 import AddFlashcards from "./pages/AddFlashcards.jsx";
 import EditFlashcardSet from "./pages/EditFlashcardSet.jsx";
+import EditFlashcard from "./pages/EditFlashcard.jsx";
 
 
 function AppRoutes() {
@@ -79,7 +80,7 @@ function AppRoutes() {
                     <Route path="/wybierz-zestaw" element={renderLayout(<FlashcardsPage />)} />
                     <Route path="/dodaj-fiszki/:categoryId" element={renderLayout(<AddFlashcards />)} />
                     <Route path="edytuj-zestaw/:categoryId" element={renderLayout(<EditFlashcardSet />)} />
-
+                    <Route path="edytuj-fiszke/:flashcardId" element={renderLayout(<EditFlashcard />)} />
                 </Route>
 
                 {UserService.adminOnly() && (
