@@ -20,6 +20,7 @@ import AddCategory from "./pages/AddCategory.jsx";
 import AddFlashcards from "./pages/AddFlashcards.jsx";
 import EditFlashcardSet from "./pages/EditFlashcardSet.jsx";
 import EditFlashcard from "./pages/EditFlashcard.jsx";
+import QuizTopicsPage from "./pages/QuizTopicsPage.jsx";
 
 
 function AppRoutes() {
@@ -81,6 +82,7 @@ function AppRoutes() {
                     <Route path="/dodaj-fiszki/:categoryId" element={renderLayout(<AddFlashcards />)} />
                     <Route path="edytuj-zestaw/:categoryId" element={renderLayout(<EditFlashcardSet />)} />
                     <Route path="edytuj-fiszke/:flashcardId" element={renderLayout(<EditFlashcard />)} />
+                    <Route path="/quizy" element={renderLayout(<QuizTopicsPage />)} />
                 </Route>
 
                 {UserService.adminOnly() && (

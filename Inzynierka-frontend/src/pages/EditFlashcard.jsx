@@ -267,7 +267,7 @@ function EditFlashcard() {
                     </button>
                 </Link>
                 <button
-                    onClick={() => handleSave()}
+                    onClick={handleSave}
                     className="flex items-center justify-center text-center gap-2 px-8 py-4 hover:bg-[#10A31B] transition text-white text-xl font-medium rounded-xl bg-[#11AB1E] cursor-pointer">
                     <MdOutlineSaveAlt/> Zapisz
                 </button>

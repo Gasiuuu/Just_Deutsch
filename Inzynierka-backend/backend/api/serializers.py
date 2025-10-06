@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
 
-from .models import CustomUser, Category, Flashcard
+from .models import CustomUser, Category, Flashcard, QuizTopic
 
 User = get_user_model()
 
@@ -76,3 +76,8 @@ class FlashcardSerializer(serializers.ModelSerializer):
             return serializers.ValidationError("Nie masz dostępu do cudzej kategorii.")
 
         return attrs
+
+class QuizTopicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QuizTopic
+        fields = ('id', 'title', 'description', 'level', 'type', 'image', 'passing_score', 'number_of_questions')

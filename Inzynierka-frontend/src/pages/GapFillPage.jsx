@@ -3,6 +3,8 @@ import GPTService from "../services/GPTService.js";
 import { BiSolidRightArrow } from "react-icons/bi";
 import { FaRegCircleCheck } from "react-icons/fa6";
 import { ImCancelCircle } from "react-icons/im";
+import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
 
 
 function GapFillPage() {
@@ -11,10 +13,12 @@ function GapFillPage() {
     const [userSolution, setUserSolution] = useState('')
     const [isCorrect, setIsCorrect] = useState(false)
     const [isClicked, setIsClicked] = useState(false)
+    const [loading, setLoading] = useState(true)
 
     async function getData() {
         try {
             const data = await GPTService.generateSentenceGapFill()
+            setLoading(false)
             console.log("odp z serwisu: ", data)
             setSentenceData(data)
             setUserSolution('')
@@ -83,23 +87,32 @@ function GapFillPage() {
     return (
         <div className="flex flex-col justify-center items-center px-20">
             <style>{slideIn}</style>
-            <div className="bg-gray-100 rounded-md p-5 mt-10 text-3xl">
-                {isClicked ? (
-                    <>
-                        {sentenceData.solution}
-                    </>
+            {loading ? (
+                <div className="w-3/4 bg-gray-100 rounded-md p-5 mt-10 text-3xl">
+                    <Box sx={{ width: '100%', padding: '10px' }}>
+                        <LinearProgress color="inherit" />
+                    </Box>
+                </div>
                 ) : (
-                    <>
-                        {renderSentence()}
-                    </>
-                )}
-            </div>
-                <form className="flex flex-row mt-40 items-center" onSubmit={handleSubmit}>
-                    <input
-                        type="text"
-                        value={userSolution}
-                        onChange={(e) => setUserSolution(e.target.value)}
-                        className="w-full p-[10px] text-3xl border-b-[1px] border-b-[#ccc] bg-[image:linear-gradient(to_right,#000080,#800080)] bg-no-repeat bg-[size:0%_2px] bg-[position:0_100%] transition-[background-size] duration-[800ms] ease-in-out focus:bg-[size:100%_2px] focus:outline-none mt-3 mb-3"
+                <div className="bg-gray-100 rounded-md p-5 mt-10 text-3xl">
+                    {isClicked ? (
+                        <>
+                            {sentenceData.solution}
+                        </>
+                    ) : (
+                        <>
+                            {renderSentence()}
+                        </>
+                    )}
+                </div>
+            )}
+
+            <form className="flex flex-row mt-40 items-center" onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    value={userSolution}
+                    onChange={(e) => setUserSolution(e.target.value)}
+                    className="w-full p-[10px] text-3xl border-b-[1px] border-b-[#ccc] bg-[image:linear-gradient(to_right,#000080,#800080)] bg-no-repeat bg-[size:0%_2px] bg-[position:0_100%] transition-[background-size] duration-[800ms] ease-in-out focus:bg-[size:100%_2px] focus:outline-none mt-3 mb-3"
                         placeholder="Wpisz brakujące słowo..."
                     />
                     <button

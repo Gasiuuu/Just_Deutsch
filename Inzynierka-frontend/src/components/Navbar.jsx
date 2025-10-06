@@ -7,6 +7,8 @@ import UserService from "../services/UserService.js";
 import UserStore from "../stores/UserStore.js";
 import { IoIosArrowDown } from "react-icons/io";
 import UserMenu from "./UserMenu.jsx";
+import Box from '@mui/material/Box';
+import Badge from '@mui/material/Badge';
 
 
 function Navbar() {
@@ -84,9 +86,17 @@ function Navbar() {
                     <MdDarkMode />
                 </button>
 
-                <button className="bg-transparent border-0 cursor-pointer text-2xl p-2">
-                    <IoNotifications />
-                </button>
+                {/*<button className="bg-transparent border-0 cursor-pointer text-2xl p-2">*/}
+                {/*    <IoNotifications />*/}
+                {/*</button>*/}
+
+                {user && (
+                    <Box sx={{fontSize: '24px', padding: '8px', cursor: 'pointer', marginBottom: '3px'}}>
+                        <Badge color="secondary" variant="dot">
+                            <IoNotifications />
+                        </Badge>
+                    </Box>
+                )}
 
                 {user && (
                     <div className="flex items-center gap-2">
@@ -97,7 +107,7 @@ function Navbar() {
                             />
                         <button
                             onClick={() => setIsMenuOpen(open => !open)}
-                            className="flex items-center gap-1 focus:outline-none"
+                            className="flex items-center gap-1 focus:outline-none cursor-pointer"
                         >
                             <IoIosArrowDown
                                 className={`text-2xl transform transition-transform duration-300 

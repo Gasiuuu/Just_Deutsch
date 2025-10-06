@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import login_view, registration_view, admin_only_view, user_only_view, FlashcardViewSet, CategoryViewSet, \
-    get_flashcards_by_category, me_view, logout_view
+    get_flashcards_by_category, me_view, logout_view, QuizTopicViewSet
 
 urlpatterns = [
     path('login/', login_view, name='login'),
@@ -14,4 +14,5 @@ urlpatterns = [
     path('flashcards/<int:category_id>/', get_flashcards_by_category, name='flashcards-by-category'),
     path('categories/', CategoryViewSet.as_view({'get': 'list', 'post': 'create'}), name='categories'),
     path('category/<int:pk>', CategoryViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}), name='category-details'),
+    path('quiz-topics/', QuizTopicViewSet.as_view({'get': 'list', 'post': 'create'}), name='quiz-topics'),
 ]

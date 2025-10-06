@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.files.base import ContentFile
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from io import BytesIO
 from gtts import gTTS
@@ -112,3 +113,35 @@ class Flashcard(models.Model):
                             ContentFile(buffer.read()),
                             save=False)
         super().save(*args, **kwargs)
+
+class QuizTopic(models.Model):
+
+    LANGUAGE_LEVEL_CHOICES = (
+        ('A1', 'A1'),
+        ('A2', 'A2'),
+        ('B1', 'B1'),
+        ('B2', 'B2'),
+        ('C1', 'C1'),
+        ('C2', 'C2'),
+    )
+
+    TYPE_CHOICES = (
+        ('słowictwo', 'Słownictwo'),
+        ('gramatyka', 'Gramatyka'),
+        ('mieszany', 'Mieszany'),
+    )
+
+    title = models.CharField(max_length=50, verbose_name='Tytuł quizu')
+    description = models.TextField(verbose_name='Opis quizu')
+    level = models.CharField(max_length=2, choices=LANGUAGE_LEVEL_CHOICES, verbose_name='Poziom zaawansowania')
+    type = models.CharField(max_length=20, choices=TYPE_CHOICES, verbose_name='Typ')
+    image = models.ImageField(upload_to='quiz_images/', blank=True, null=True, verbose_name='Miniaturka')
+    passing_score = models.PositiveIntegerField(default=60, validators=[MinValueValidator(0), MaxValueValidator(100)], verbose_name='Wynik potrzebny do zaliczenia (%)')
+    number_of_questions = models.PositiveIntegerField(default=10, validators=[MinValueValidator(0), MaxValueValidator(100)], verbose_name='Ilość pytań')
+
+    class Meta:
+        verbose_name = 'Temat quizu'
+        verbose_name_plural = 'Tematy quizów'
+
+    def __str__(self):
+        return f"{self.title} ({self.level})"

@@ -7,8 +7,8 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 
-from .models import CustomUser, Category, Flashcard
-from .serializers import LoginSerializer, RegisterSerializer, CustomUserSerializer, CategorySerializer, FlashcardSerializer
+from .models import CustomUser, Category, Flashcard, QuizTopic
+from .serializers import LoginSerializer, RegisterSerializer, CustomUserSerializer, CategorySerializer, FlashcardSerializer, QuizTopicSerializer
 
 
 class CustomUserViewSet(viewsets.ModelViewSet):
@@ -53,7 +53,10 @@ class FlashcardViewSet(viewsets.ModelViewSet):
 
         return queryset.filter(owner=user)
 
-
+class QuizTopicViewSet(viewsets.ModelViewSet):
+    queryset = QuizTopic.objects.all()
+    serializer_class = QuizTopicSerializer
+    permission_classes = [IsAuthenticated]
 
 def set_jwt_token(response, token):
     response.set_cookie(
