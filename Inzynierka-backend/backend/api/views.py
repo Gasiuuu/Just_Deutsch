@@ -7,8 +7,9 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 
-from .models import CustomUser, Category, Flashcard, QuizTopic
-from .serializers import LoginSerializer, RegisterSerializer, CustomUserSerializer, CategorySerializer, FlashcardSerializer, QuizTopicSerializer
+from .models import CustomUser, Category, Flashcard, QuizTopic, Question, Answer
+from .serializers import LoginSerializer, RegisterSerializer, CustomUserSerializer, CategorySerializer, \
+    FlashcardSerializer, QuizTopicSerializer, QuestionSerializer, AnswerSerializer
 
 
 class CustomUserViewSet(viewsets.ModelViewSet):
@@ -56,6 +57,16 @@ class FlashcardViewSet(viewsets.ModelViewSet):
 class QuizTopicViewSet(viewsets.ModelViewSet):
     queryset = QuizTopic.objects.all()
     serializer_class = QuizTopicSerializer
+    permission_classes = [IsAuthenticated]
+
+class QuestionViewSet(viewsets.ModelViewSet):
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+    permission_classes = [IsAuthenticated]
+
+class AnswerViewSet(viewsets.ModelViewSet):
+    queryset = Answer.objects.all()
+    serializer_class = AnswerSerializer
     permission_classes = [IsAuthenticated]
 
 def set_jwt_token(response, token):
@@ -133,6 +144,22 @@ def get_flashcards_by_category(request, category_id):
 
     flashcards = category.flashcards.all()
     serializer = FlashcardSerializer(flashcards, many=True, context={'request': request})
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_questions_by_quiz(request, quiz_id):
+    quiz = QuizTopic.objects.get(id=quiz_id)
+    questions = Question.objects.filter(quiz=quiz)
+    serializer = QuestionSerializer(questions, many=True, context={'request': request})
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_answers_by_question(request, question_id):
+    question = Question.objects.get(id=question_id)
+    answers = Answer.objects.filter(question=question)
+    serializer = AnswerSerializer(answers, many=True, context={'request': request})
     return Response(serializer.data)
 
 def role_required(role):

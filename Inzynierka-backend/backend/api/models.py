@@ -145,3 +145,54 @@ class QuizTopic(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.level})"
+
+
+class Question(models.Model):
+    TYPE_CHOICES = (
+        ('single', 'Jednokrotny wybór'),
+        ('multiple', 'Wielokrotny wybór'),
+    )
+
+    quiz = models.ForeignKey(QuizTopic, on_delete=models.CASCADE, related_name='questions', verbose_name="Quiz")
+    question_text = models.CharField(verbose_name="Treść pytania (PL)")
+    question_text_de = models.CharField(verbose_name="Treść pytania (DE)", blank=True, null=True)
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES, default='single', verbose_name="Typ")
+    explanation = models.TextField(verbose_name="Wyjaśnienie", blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Pytanie"
+        verbose_name_plural = "Pytania"
+
+    def __str__(self):
+        return f"{self.question_text[:20]}... - ({self.type})"
+
+
+class Answer(models.Model):
+    LABEL_CHOICES = (
+        ('A', 'A'),
+        ('B', 'B'),
+        ('C', 'C'),
+        ('D', 'D'),
+        ('E', 'E'),
+        ('F', 'F'),
+    )
+
+    label = models.CharField(max_length=1, choices=LABEL_CHOICES, default='A', verbose_name="Etykieta")
+    text = models.TextField(verbose_name="Treść odpowiedzi")
+    is_correct = models.BooleanField(default=False, verbose_name="Czy poprawna")
+    order = models.PositiveIntegerField(default=0, verbose_name="Kolejność")
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='question', null=True)
+
+    class Meta:
+        verbose_name = "Odpowiedź"
+        verbose_name_plural = "Odpowiedzi"
+        ordering = ['order', 'label']
+
+        # constraints = [
+        #     models.UniqueConstraint(fields=['question', 'label'], name='unique_question_answer'),
+        # ]
+
+    def __str__(self):
+        return f"{self.label}. {self.text[:20]}..."
+
+

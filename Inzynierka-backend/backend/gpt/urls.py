@@ -5,4 +5,5 @@ urlpatterns = [
     path('generate-sentence1/', generate_sentence1, name='generate-sentence1'),
     path('generate-sentence2/', generate_sentence2, name='generate-sentence2'),
     path('generate_dialogue/', generate_dialogue, name='generate_dialogue'),
+    # path('generate-question/', generate_question, name='generate-question'),
 ]

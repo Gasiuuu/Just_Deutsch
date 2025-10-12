@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
 
-from .models import CustomUser, Category, Flashcard, QuizTopic
+from .models import CustomUser, Category, Flashcard, QuizTopic, Question, Answer
 
 User = get_user_model()
 
@@ -81,3 +81,17 @@ class QuizTopicSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuizTopic
         fields = ('id', 'title', 'description', 'level', 'type', 'image', 'passing_score', 'number_of_questions')
+
+
+
+class AnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Answer
+        fields = ('id', 'label', 'text', 'is_correct', 'order', 'question')
+
+
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        quiz = serializers.PrimaryKeyRelatedField(read_only=True)
+        model = Question
+        fields = ('id', 'quiz', 'question_text', 'question_text_de', 'type', 'explanation')

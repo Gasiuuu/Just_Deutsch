@@ -2,6 +2,7 @@ import React, {useState, useEffect } from 'react'
 import QuizService from "../services/QuizService.js";
 import { Modal, Box, Typography, Button, Stack } from '@mui/material';
 import { FaCheck } from "react-icons/fa";
+import {Link} from "react-router-dom";
 
 
 function QuizTopicsPage () {
@@ -21,6 +22,10 @@ function QuizTopicsPage () {
             setLoading(false)
             console.log(response)
             setQuizTopics(response)
+            const response2 = await QuizService.getQuestions()
+            console.log(response2)
+            const response3 = await QuizService.getAnswers()
+            console.log(response3)
 
         } catch (e) {
             console.error("Wystąpił błąd w pobieraniu tematów quizów: ", e)
@@ -125,12 +130,15 @@ function QuizTopicsPage () {
                         >
                             Wróć
                         </Button>
-                        <Button
-                            variant="contained"
-                            color="success"
-                        >
-                            Rozpocznij quiz
-                        </Button>
+
+                        <Link key={selectedTopic?.id} to={`/quiz/${selectedTopic?.id}`}>
+                            <Button
+                                variant="contained"
+                                color="success"
+                            >
+                                Rozpocznij quiz
+                            </Button>
+                        </Link>
                     </Stack>
                 </Box>
             </Modal>
@@ -140,8 +148,9 @@ function QuizTopicsPage () {
                     className="w-full px-15 flex text-2xl flex-row justify-between items-center mx-auto mb-10 rounded-xl border-1 border-gray-200 shadow-md hover:shadow-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all duration-500 hover:-translate-y-1"
                     key={quizTopic.id}
                     onClick={() => askStart(quizTopic)}>
-                    <img className="w-25 h-25 p-2 object-cover object-center rounded-full overflow-hidden flex-shrink-0"
-                         src={quizTopic.image} alt={quizTopic.title}/>
+                    <img
+                        className="w-25 h-25 p-2 object-cover object-center rounded-full overflow-hidden flex-shrink-0"
+                        src={quizTopic.image} alt={quizTopic.title}/>
                     <div className="flex-1 text-left pl-8">
                         <h5>{quizTopic.title}</h5>
                     </div>
