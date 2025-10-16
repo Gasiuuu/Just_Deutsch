@@ -1,5 +1,6 @@
 import React from 'react'
 import UserStore from "../stores/UserStore.js";
+import RecentFlashcardWidget from "../components/RecentFlashcardWidget.jsx";
 
 function Home() {
 
@@ -21,10 +22,10 @@ function Home() {
     }
     return (
         <div className="px-5 py-3 mb-20">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-[#000080] to-[#800080] bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-[#000080] to-[#800080] bg-clip-text text-transparent mb-10">
                 {helloHeader()}
             </h1>
-
+            <RecentFlashcardWidget />
         </div>
     )
 }

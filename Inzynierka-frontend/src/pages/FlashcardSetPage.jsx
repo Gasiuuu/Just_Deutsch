@@ -7,6 +7,8 @@ import { IoVolumeMedium } from "react-icons/io5";
 import EmptySet from "../components/animations/EmptySet.jsx"
 import Login from "./Login/Login.module.css";
 import {IoIosArrowBack, IoMdAdd} from "react-icons/io";
+import useFlashcardStore from "../stores/useFlashcardStore.js";
+import CategoryService from "../services/CategoryService.js";
 
 
 const colorMap = {
@@ -35,19 +37,39 @@ const colorMap = {
 function FlashcardSetPage() {
 
     const { categoryId } = useParams();
-    const [flashcards, setFlashcards] = useState([]);
+    const [flashcards, setFlashcards] = useState([])
+    const [category, setCategory] = useState(null)
     const [currentIndex, setCurrentIndex] = useState(0)
     const [isFront, setIsFront] = useState(false)
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const { recentSet, setRecentSet, updateLastIndex } = useFlashcardStore()
 
     const fetchFlashcards = async (categoryId) => {
         try {
             const response = await FlashcardService.getFlashcardByCategoryId(categoryId)
             console.log("odp z endpointu: ", response)
             setFlashcards(response)
-            setCurrentIndex(0)
+
+            const response2 = await CategoryService.getCategoryById(categoryId)
+            setCategory(response2)
+
+
+            const startIndex = recentSet?.categoryId === categoryId
+                ? recentSet?.lastIndex
+                : 0
+
+            setCurrentIndex(startIndex)
             setIsFront(true)
+
+            setRecentSet(
+                categoryId,
+                response2.name,
+                response2.image,
+                response,
+                startIndex
+            )
         } catch(error) {
             console.error(error);
             setError("Nie udało załadować się fiszek")
@@ -59,6 +81,12 @@ function FlashcardSetPage() {
     useEffect(() => {
         fetchFlashcards(categoryId);
     }, [categoryId]);
+
+    useEffect(() => {
+        if (flashcards.length > 0) {
+            updateLastIndex(currentIndex)
+        }
+    }, [currentIndex, updateLastIndex])
 
     if(loading) return <p>Ładowanie...</p>;
     if(error) return <p>{error}</p>

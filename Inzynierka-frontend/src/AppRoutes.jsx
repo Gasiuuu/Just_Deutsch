@@ -55,7 +55,7 @@ function AppRoutes() {
 
             <div className="flex flex-1">
                 <Sidebar />
-                <div className="flex-1 p-8 overflow-y-auto mb-15">
+                <div className="flex-1 p-8 overflow-y-auto mb-15 bg-[#FAFAFA]">
                     {Component}
                 </div>
             </div>
