@@ -19,6 +19,16 @@ class QuizService {
         const response = await axios.get(`${this.BASE_URL}/questions`, { withCredentials: true })
         return response.data
     }
+
+    static async getQuestionsByQuizTopic(QuizTopicId) {
+        const response = await axios.get(`${this.BASE_URL}/questions/${QuizTopicId}`, { withCredentials: true })
+        return response.data
+    }
+
+    static async getAnswersByQuestion(questionId) {
+        const response = await axios.get(`${this.BASE_URL}/answers/${questionId}`, { withCredentials: true })
+        return response.data
+    }
 }
 
 export default QuizService

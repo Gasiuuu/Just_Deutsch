@@ -22,6 +22,7 @@ import EditFlashcardSet from "./pages/EditFlashcardSet.jsx";
 import EditFlashcard from "./pages/EditFlashcard.jsx";
 import QuizTopicsPage from "./pages/QuizTopicsPage.jsx";
 import QuizPage from "./pages/QuizPage.jsx";
+import QuizResult from "./pages/QuizResult.jsx";
 
 
 function AppRoutes() {
@@ -85,6 +86,7 @@ function AppRoutes() {
                     <Route path="edytuj-fiszke/:flashcardId" element={renderLayout(<EditFlashcard />)} />
                     <Route path="/quizy" element={renderLayout(<QuizTopicsPage />)} />
                     <Route path="/quiz/:quizId" element={renderLayout(<QuizPage />)} />
+                    <Route path="/quiz/:quizId/wyniki" element={renderLayout(<QuizResult />)} />
                 </Route>
 
                 {UserService.adminOnly() && (
