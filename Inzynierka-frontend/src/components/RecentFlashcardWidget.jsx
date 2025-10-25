@@ -35,7 +35,7 @@ function RecentFlashcardWidget() {
             ) : (
                 <h3 className="text-xl font-semibold text-gray-800 mb-4">Kontynuuj naukę</h3>
             )}
-            <div className="flex gap-4">
+            <div className="flex items-center gap-4  mt-6">
                 {recentSet.categoryImage && (
                     <img
                         src={recentSet.categoryImage}
@@ -66,7 +66,7 @@ function RecentFlashcardWidget() {
             </div>
             {isFinished() && (
                 <button
-                    className="flex flex-end px-4 py-2 ml-auto bg-gradient-to-r from-[#366FD6] to-[#0942AB] text-white font-medium rounded-xl cursor-pointer hover:shadow-lg transition-shadow duration-300"
+                    className="flex flex-end px-4 py-2 mt-2 ml-auto bg-gradient-to-r from-[#366FD6] to-[#0942AB] text-white font-medium rounded-xl cursor-pointer hover:shadow-lg transition-shadow duration-300"
                     onClick={(e) => {
                         e.stopPropagation()
                         navigate(`/fiszki/`)

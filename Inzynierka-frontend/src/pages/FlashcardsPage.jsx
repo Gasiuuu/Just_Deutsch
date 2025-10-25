@@ -4,7 +4,7 @@ import { FaPlusCircle } from "react-icons/fa";
 import {Link, useLocation} from "react-router-dom";
 import FlashcardsCreatingMenu from "../components/FlashcardsCreatingMenu.jsx";
 import UserStore from "../stores/UserStore.js";
-import { IoReturnUpBack } from "react-icons/io5";
+import {IoIosArrowBack} from "react-icons/io";
 import { HiDotsVertical } from "react-icons/hi";
 import FlashcardMenu from "../components/FlashcardMenu.jsx";
 import { Modal, Box, Typography, Button, Stack } from '@mui/material';
@@ -81,7 +81,7 @@ function FlashcardsPage() {
                     <Link to="/fiszki">
                         <button
                             className="flex flex-row cursor-pointer bg-red-700 text-white text-[1.2rem] font-semibold rounded-4xl px-4 py-2">
-                            <IoReturnUpBack className="mr-2 mt-0.5"/> Wróć
+                            <IoIosArrowBack className="mr-2 mt-0.5"/> Wróć
                         </button>
                     </Link>
                 )}

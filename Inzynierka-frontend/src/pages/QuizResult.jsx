@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import {IoIosArrowBack, IoMdCheckmarkCircle, IoMdCloseCircle} from "react-icons/io";
 import {FaLightbulb} from "react-icons/fa";
@@ -7,32 +7,15 @@ function QuizResult () {
     const location = useLocation()
     const navigate = useNavigate()
     const { quizId } = useParams()
-    const [quizScore, setQuizScore] = useState({ correct: 0, total: 0 })
 
-    const { questions, answersMap, userAnswers } = location.state || {}
+    const { questions, answersMap, userAnswers, quizScore } = location.state || {}
 
     useEffect(() => {
         if (!questions || !answersMap || !userAnswers) {
             navigate(`/quiz/${quizId}`)
             return
         }
-        calculateScore()
     }, [])
-
-    const calculateScore = () => {
-        let correct = 0
-
-        questions.forEach((question) => {
-            const answerForQuestion = userAnswers[question.id]
-            const answers = answersMap[question.id] || []
-            const selectedAnswer = answers.find((answer) => answer.id === answerForQuestion)
-
-        if (selectedAnswer && selectedAnswer.is_correct) {
-            correct++
-        }
-        })
-        setQuizScore({ correct: correct, total: questions.length })
-    }
 
     const isAnswerCorrect = (questionId) => {
         const answerForQuestion = userAnswers[questionId]

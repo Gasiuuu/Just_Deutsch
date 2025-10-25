@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
 
-from .models import CustomUser, Category, Flashcard, QuizTopic, Question, Answer
+from .models import CustomUser, Category, Flashcard, QuizTopic, Question, Answer, QuizAttempt, RecentQuiz
 
 User = get_user_model()
 
@@ -95,3 +95,32 @@ class QuestionSerializer(serializers.ModelSerializer):
         quiz = serializers.PrimaryKeyRelatedField(read_only=True)
         model = Question
         fields = ('id', 'quiz', 'question_text', 'question_text_de', 'type', 'explanation')
+
+
+class QuizAttemptSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    quiz = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = QuizAttempt
+        fields = ('user', 'quiz', 'score')
+
+
+class RecentQuizSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RecentQuiz
+        fields = ['quiz_topic_id', 'quiz_topic_title', 'quiz_topic_image', 'quiz_score']
+
+    def create(self, validated_data):
+        user = validated_data.pop('user')  # Pobierz usera z validated_data
+        obj, created = RecentQuiz.objects.update_or_create(
+            user=user,
+            defaults=validated_data
+        )
+        return obj
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance

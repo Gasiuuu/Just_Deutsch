@@ -6,10 +6,12 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
+from django.utils import timezone
 
-from .models import CustomUser, Category, Flashcard, QuizTopic, Question, Answer
+from .models import CustomUser, Category, Flashcard, QuizTopic, Question, Answer, QuizAttempt, RecentQuiz
 from .serializers import LoginSerializer, RegisterSerializer, CustomUserSerializer, CategorySerializer, \
-    FlashcardSerializer, QuizTopicSerializer, QuestionSerializer, AnswerSerializer
+    FlashcardSerializer, QuizTopicSerializer, QuestionSerializer, AnswerSerializer, QuizAttemptSerializer, \
+    RecentQuizSerializer
 
 
 class CustomUserViewSet(viewsets.ModelViewSet):
@@ -161,6 +163,69 @@ def get_answers_by_question(request, question_id):
     answers = Answer.objects.filter(question=question)
     serializer = AnswerSerializer(answers, many=True, context={'request': request})
     return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_recent_quiz(request):
+    try:
+        recent_quiz = RecentQuiz.objects.get(user=request.user)
+        serializer = RecentQuizSerializer(recent_quiz)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except RecentQuiz.DoesNotExist:
+        return Response(
+            {'message': 'No recent quiz found'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def set_recent_quiz(request):
+    try:
+        recent_quiz = RecentQuiz.objects.get(user=request.user)
+        serializer = RecentQuizSerializer(
+            recent_quiz,
+            data=request.data,
+            partial=True,
+            context={'request': request}
+        )
+    except RecentQuiz.DoesNotExist:
+        serializer = RecentQuizSerializer(
+            data=request.data,
+            context={'request': request}
+        )
+
+    if serializer.is_valid():
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_quiz_attempt(request, quiz_id):
+    try:
+        quiz = QuizTopic.objects.get(id=quiz_id)
+    except QuizTopic.DoesNotExist:
+        return Response({'error': 'Quiz nie istnieje.'}, status=status.HTTP_404_NOT_FOUND)
+
+    score = request.data.get('score')
+
+    if score is None:
+        return Response({'error': 'Brak wyniku.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    attempt = QuizAttempt.objects.create(
+        user=request.user,
+        quiz=quiz,
+        score=score,
+        completed_at=timezone.now()
+    )
+
+    serializer = QuizAttemptSerializer(attempt)
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 def role_required(role):
     def decorator(view_func):

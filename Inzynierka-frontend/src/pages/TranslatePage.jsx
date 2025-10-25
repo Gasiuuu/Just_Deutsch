@@ -115,10 +115,12 @@ function TranslatePage() {
                     }
 
                     {isCorrect === false &&
-                        <div className="flex flex-row shadow-md align-center justify-center mt-20 text-red-500 bg-gray-100 rounded-lg p-4 w-1/2 text-3xl"
-                             style={{animation: 'slideIn 0.5s ease-out forwards'}}>
-                            <ImCancelCircle className="text-4xl mr-3 text-red-500" />
-                            Źle! Poprawne rozwiązanie to <span className=" ml-2 text-red-700"> {sentenceData.missing_world}</span>
+                        <div
+                            className="shadow-md flex  justify-center mt-20 text-red-500 bg-gray-100 rounded-lg p-4 w-1/2 text-3xl"
+                            style={{animation: 'slideIn 0.5s ease-out forwards'}}>
+                            <ImCancelCircle className="text-4xl mr-3 text-red-500"/>
+                            <span>Źle! Poprawne rozwiązanie to <span
+                                className="text-red-700">{sentenceData.solution}</span></span>
                         </div>
                     }
                 </>

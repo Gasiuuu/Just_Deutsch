@@ -18,14 +18,17 @@ function QuizPage() {
     const [helperText, setHelperText] = React.useState('Choose wisely');
     const [currentIndex, setCurrentIndex] = useState(0)
     const [loading, setLoading] = useState(true)
+    const [quizInfo, setQuizInfo] = useState(null)
 
     const question = questions[currentIndex]
     const currentAnswers = question ? answersMap[question.id] : []
     const navigate = useNavigate()
 
 
+
     useEffect(() => {
         getQuestions()
+        getQuizTopic()
     }, [])
 
 
@@ -41,7 +44,16 @@ function QuizPage() {
         } finally {
             setLoading(false)
         }
+    }
 
+    const getQuizTopic = async () => {
+        try {
+            const response = await QuizService.getQuizTopicById(quizId)
+            console.log("info o quizTopic: ", response)
+            setQuizInfo(response)
+        } catch (e) {
+            console.log("Nie udało się załadować tematu quizu: ", e)
+        }
     }
 
     const getAnswers = async (questions) => {
@@ -76,12 +88,29 @@ function QuizPage() {
         setCurrentIndex(i => Math.min(i + 1, questions.length - 1))
     }
 
-    const handleFinishAttempt = () => {
+    const handleFinishAttempt = async () => {
+        const score = calculateScore()
+        const quizScore = Math.round((score.correct / score.total) * 100)
+
+        await QuizService.createQuizAttempt(quizId, quizScore)
+
+        if(quizInfo) {
+            const payload = {
+                quiz_topic_id: quizInfo.id,
+                quiz_topic_title: quizInfo.title,
+                quiz_topic_image: quizInfo.image,
+                quiz_score: quizScore || 0
+            }
+            console.log("gotowy payload: ", payload)
+            QuizService.createRecentQuizAttempt(payload)
+        }
+
         navigate(`/quiz/${quizId}/wyniki`, {
             state: {
                 questions,
                 answersMap,
-                userAnswers
+                userAnswers,
+                quizScore: score
             }
         })
     }
@@ -94,6 +123,21 @@ function QuizPage() {
         questions.every(question => isQuestionAnswered(question.id))
 
     const currentValue = question ? (userAnswers[question.id] || '') : ''
+
+    const calculateScore = () => {
+        let correct = 0
+
+        questions.forEach((question) => {
+            const answerForQuestion = userAnswers[question.id]
+            const answers = answersMap[question.id] || []
+            const selectedAnswer = answers.find((answer) => answer.id === answerForQuestion)
+
+            if (selectedAnswer && selectedAnswer.is_correct) {
+                correct++
+            }
+        })
+        return { correct: correct, total: questions.length }
+    }
 
     if (loading) {
         return (

@@ -4,6 +4,8 @@ from django.core.files.base import ContentFile
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from io import BytesIO
+
+from django.db.models import ForeignKey
 from gtts import gTTS
 
 class CustomUser(AbstractUser):
@@ -196,3 +198,38 @@ class Answer(models.Model):
         return f"{self.label}. {self.text[:20]}..."
 
 
+class QuizAttempt(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='quiz_attempts', null=True)
+    quiz = models.ForeignKey(QuizTopic, on_delete=models.CASCADE, related_name='quiz_attempts')
+    score = models.DecimalField(max_digits=5, decimal_places=2, verbose_name='wynik (%)')
+    started_at = models.DateTimeField(auto_now_add=True, verbose_name='Rozpoczęto')
+    completed_at = models.DateTimeField(blank=True, null=True, verbose_name='Ukończono')
+
+    class Meta:
+        verbose_name = "Podejście do quizu"
+        verbose_name_plural = "Podejścia do quizów"
+        ordering = ['started_at']
+
+    def __str__(self):
+        return f"{self.user.username} - {self.quiz} - {self.score}%"
+
+class RecentQuiz(models.Model):
+    user = models.OneToOneField(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='recent_quiz'
+    )
+    quiz_topic_id = models.IntegerField()
+    quiz_topic_title = models.CharField(max_length=255)
+    quiz_topic_image = models.URLField(max_length=500, blank=True, null=True)
+    quiz_score = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'recent_quiz'
+        verbose_name = 'Recent Quiz'
+        verbose_name_plural = 'Recent Quizzes'
+
+    def __str__(self):
+        return f"{self.user.username} - {self.quiz_topic_title}"
