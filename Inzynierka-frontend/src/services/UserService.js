@@ -41,6 +41,10 @@ class UserService {
         return response.data;
     }
 
+    static async editUser(userId, data) {
+        await axios.patch(`${this.BASE_URL}/edit-user/${userId}`, data, { withCredentials: true })
+    }
+
     static isAuthenticated(){
         const token = sessionStorage.getItem('token')
         return !!token

@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import login_view, registration_view, admin_only_view, user_only_view, FlashcardViewSet, CategoryViewSet, \
     get_flashcards_by_category, me_view, logout_view, QuizTopicViewSet, QuestionViewSet, get_questions_by_quiz, \
-    AnswerViewSet, get_answers_by_question, create_quiz_attempt, get_recent_quiz, set_recent_quiz
+    AnswerViewSet, get_answers_by_question, create_quiz_attempt, get_recent_quiz, set_recent_quiz, CustomUserViewSet
 
 urlpatterns = [
     path('login/', login_view, name='login'),
@@ -9,6 +9,7 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
     path('admin/', admin_only_view, name='admin'),
     path('user/', user_only_view, name='user'),
+    path('edit-user/<int:pk>', CustomUserViewSet.as_view({'patch': 'partial_update'}), name='edit-user'),
     path('me/', me_view, name='me' ),
     path('flashcards/', FlashcardViewSet.as_view({'get': 'list', 'post': 'create'}), name='flashcards'),
     path('flashcard/<int:pk>/', FlashcardViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}), name='flashcard-details'),

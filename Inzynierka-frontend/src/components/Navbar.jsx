@@ -100,11 +100,14 @@ function Navbar() {
 
                 {user && (
                     <div className="flex items-center gap-2">
+                        <Link to="/profil">
                             <img
                                 src={`${BACKEND_URL}${user.avatar}`}
                                 alt="avatar"
                                 className="rounded-full w-10 h-10 object-cover"
                             />
+                        </Link>
+
                         <button
                             onClick={() => setIsMenuOpen(open => !open)}
                             className="flex items-center gap-1 focus:outline-none cursor-pointer"
