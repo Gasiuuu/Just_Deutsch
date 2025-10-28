@@ -5,6 +5,8 @@ import { FaRegCircleCheck } from "react-icons/fa6";
 import { ImCancelCircle } from "react-icons/im";
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
+import {useParams} from "react-router-dom";
+import CategoryService from "../services/CategoryService.js";
 
 
 function GapFillPage() {
@@ -14,10 +16,17 @@ function GapFillPage() {
     const [isCorrect, setIsCorrect] = useState(false)
     const [isClicked, setIsClicked] = useState(false)
     const [loading, setLoading] = useState(true)
+    const [category, setCategory] = useState({})
+
+    const {categoryId} = useParams()
 
     async function getData() {
+        const response =  await CategoryService.getCategoryById(categoryId)
+        console.log("odp z endpointu: ", response)
+        setCategory(response)
+
         try {
-            const data = await GPTService.generateSentenceGapFill()
+            const data = await GPTService.generateSentenceGapFill(response.name)
             setLoading(false)
             console.log("odp z serwisu: ", data)
             setSentenceData(data)

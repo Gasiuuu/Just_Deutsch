@@ -5,6 +5,9 @@ import {FaRegCircleCheck} from "react-icons/fa6";
 import {ImCancelCircle} from "react-icons/im";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
+import {useParams} from "react-router-dom";
+import FlashcardService from "../services/FlashcardService.js";
+import CategoryService from "../services/CategoryService.js";
 
 
 function TranslatePage() {
@@ -14,10 +17,18 @@ function TranslatePage() {
     const [isCorrect, setIsCorrect] = useState(false)
     const [isClicked, setIsClicked] = useState(false)
     const [loading, setLoading] = useState(true)
+    const [category, setCategory] = useState({})
+
+    const {categoryId} = useParams()
+    console.log(categoryId)
 
     async function getData() {
+        const response =  await CategoryService.getCategoryById(categoryId)
+        console.log("odp z endpointu: ", response)
+        setCategory(response)
+
         try {
-            const data = await GPTService.generateSentenceTranslate()
+            const data = await GPTService.generateSentenceTranslate(response.name)
             console.log("odp z serwisu: ", data)
             setLoading(false)
             setSentenceData(data)

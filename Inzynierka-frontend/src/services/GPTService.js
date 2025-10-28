@@ -4,17 +4,17 @@ class GPTService {
     static BACKEND = import.meta.env.VITE_ENV_BACKEND_URL;
     static BASE_URL = `${this.BACKEND}/gpt`;
 
-    static async generateSentenceGapFill() {
+    static async generateSentenceGapFill(category) {
         const response = await axios.post(`${this.BASE_URL}/generate-sentence1/`,
-            {},
+            {"category": category},
             {withCredentials: true}
         );
         return response.data;
     }
 
-    static async generateSentenceTranslate() {
+    static async generateSentenceTranslate(category) {
         const response = await axios.post(`${this.BASE_URL}/generate-sentence2/`,
-            {},
+            {"category": category},
             {withCredentials: true}
         );
         return response.data;

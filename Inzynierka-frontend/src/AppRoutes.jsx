@@ -24,6 +24,7 @@ import QuizTopicsPage from "./pages/QuizTopicsPage.jsx";
 import QuizPage from "./pages/QuizPage.jsx";
 import QuizResult from "./pages/QuizResult.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
+import AiPage from "./pages/AiPage.jsx";
 
 
 function AppRoutes() {
@@ -78,8 +79,9 @@ function AppRoutes() {
                     <Route path="/fiszki" element={renderLayout(<FlashcardsPage />)}/>
                     <Route path="/fiszki/:categoryId" element={renderLayout(<FlashcardSetPage />)} />
                     <Route path="/slownik" element={renderLayout(<DictionaryPage />)} />
-                    <Route path="/tlumaczenia" element={renderLayout(<TranslatePage />)} />
-                    <Route path="/gap-fill" element={renderLayout(<GapFillPage />)}  />
+                    <Route path="/cwiczenia-ai" element={renderLayout(<AiPage />)} />
+                    <Route path="cwiczenia-ai/tlumaczenia/:categoryId" element={renderLayout(<TranslatePage />)} />
+                    <Route path="/cwiczenia-ai/gap-fill/:categoryId" element={renderLayout(<GapFillPage />)}  />
                     <Route path="/dodaj-kategorie" element={renderLayout(<AddCategory />)} />
                     <Route path="/wybierz-zestaw" element={renderLayout(<FlashcardsPage />)} />
                     <Route path="/dodaj-fiszki/:categoryId" element={renderLayout(<AddFlashcards />)} />

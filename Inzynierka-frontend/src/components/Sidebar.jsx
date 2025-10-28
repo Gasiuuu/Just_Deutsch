@@ -8,6 +8,7 @@ import Vocabulary from '../icons/Vocabulary.jsx'
 import Grammar from '../icons/Grammar.jsx'
 import Dialog from "../icons/Dialog.jsx";
 import GapFill from "../icons/GapFill.jsx";
+import Ai from "../icons/Ai.jsx";
 
 function Sidebar() {
     return (
@@ -28,8 +29,9 @@ function Sidebar() {
                     { to: '/quizy',         color: '#d50010', label: 'Quizy',        Icon: Quiz1 },
                     { to: '/slownictwo',    color: '#4dc416', label: 'Słownictwo',   Icon: Vocabulary },
                     { to: '/gramatyka',     color: '#cb16f3', label: 'Gramatyka',    Icon: Grammar },
-                    { to: '/gap-fill',      color: '#faee25', label: 'Gap Fill',     Icon: GapFill },
-                    { to: '/tlumaczenia',   color: '#1c274c', label: 'Tłumaczenia',  Icon: Dialog },
+                    // { to: '/gap-fill',      color: '#faee25', label: 'Gap Fill',     Icon: GapFill },
+                    // { to: '/tlumaczenia',   color: '#1c274c', label: 'Tłumaczenia',  Icon: Dialog },
+                    { to: '/cwiczenia-ai',  color: '#faee25', label: 'Ćwiczenia AI', Icon: Ai },
                 ].map(({ to, color, label, Icon }) => (
                     <NavLink
                         key={to}
