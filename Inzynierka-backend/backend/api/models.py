@@ -8,6 +8,17 @@ from io import BytesIO
 from django.db.models import ForeignKey
 from gtts import gTTS
 
+
+class Preference(models.Model):
+    label = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.label
+
+    class Meta:
+        verbose_name = 'Preferencja'
+        verbose_name_plural = 'Preferencje'
+
 class CustomUser(AbstractUser):
     ROLE_CHOICES = (
         ('admin', 'Admin'),
@@ -21,21 +32,9 @@ class CustomUser(AbstractUser):
         ('c1', 'C1'),
         ('c2', 'C2'),
     )
-    PREFERENCES_CHOICES = (
-        ('sport', 'Sport'),
-        ('podroze', 'Podróże'),
-        ('motoryzacja', 'Motoryzacja'),
-        ('dom i ogrod', 'Dom i ogród'),
-        ('czlowiek', 'Człowiek'),
-        ('moda', 'Moda'),
-        ('zwierzeta', 'Zwierzęta'),
-        ('rosliny', 'Rośliny'),
-        ('zywnosc', 'Żywność'),
-        ('zawody', 'Zawody'),
-    )
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
     language_level = models.CharField(max_length=2, choices=LANGUAGE_LEVEL_CHOICES, default='a1')
-    preferences = models.CharField(max_length=20, choices=PREFERENCES_CHOICES, default='sport')
+    preferences = models.ManyToManyField(Preference, blank=True, related_name='users')
     avatar = models.ImageField(upload_to='avatars/', default='/avatars/default_avatar.jpg')
 
     def __str__(self):

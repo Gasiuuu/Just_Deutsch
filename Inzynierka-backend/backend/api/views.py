@@ -8,10 +8,10 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 from django.utils import timezone
 
-from .models import CustomUser, Category, Flashcard, QuizTopic, Question, Answer, QuizAttempt, RecentQuiz
+from .models import CustomUser, Category, Flashcard, QuizTopic, Question, Answer, QuizAttempt, RecentQuiz, Preference
 from .serializers import LoginSerializer, RegisterSerializer, CustomUserSerializer, CategorySerializer, \
     FlashcardSerializer, QuizTopicSerializer, QuestionSerializer, AnswerSerializer, QuizAttemptSerializer, \
-    RecentQuizSerializer
+    RecentQuizSerializer, PreferenceSerializer
 
 
 class CustomUserViewSet(viewsets.ModelViewSet):
@@ -131,6 +131,12 @@ def me_view(request):
     user = request.user
     user_data = CustomUserSerializer(user).data
     return Response(user_data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def get_all_preferences(request):
+    preferences = Preference.objects.all()
+    serializer = PreferenceSerializer(preferences, many=True)
+    return Response(serializer.data)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

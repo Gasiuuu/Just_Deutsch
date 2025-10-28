@@ -1,14 +1,32 @@
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
 
-from .models import CustomUser, Category, Flashcard, QuizTopic, Question, Answer, QuizAttempt, RecentQuiz
+from .models import CustomUser, Category, Flashcard, QuizTopic, Question, Answer, QuizAttempt, RecentQuiz, Preference
 
 User = get_user_model()
 
+class PreferenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Preference
+        fields = ('id', 'label')
+
 class CustomUserSerializer(serializers.ModelSerializer):
+    preferences = PreferenceSerializer(many=True, read_only=True)
+    preference_ids = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Preference.objects.all(),
+        source='preferences',
+        required=False,
+        write_only=True
+    )
+
     class Meta:
         model = CustomUser
-        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'date_joined', 'role', 'language_level', 'avatar', 'preferences')
+        fields = ('id', 'username', 'first_name', 'last_name', 'email',
+                  'date_joined', 'role', 'language_level', 'avatar',
+                  'preferences', 'preference_ids')
+        read_only_fields = ('id', 'date_joined')
+
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)

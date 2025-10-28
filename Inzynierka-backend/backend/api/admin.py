@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import CustomUser, Category, Flashcard, QuizTopic, Question, Answer
+from .models import CustomUser, Category, Flashcard, QuizTopic, Question, Answer, Preference
 
 # Register your models here.
 admin.site.register(CustomUser)
@@ -9,3 +9,4 @@ admin.site.register(Flashcard)
 admin.site.register(QuizTopic)
 admin.site.register(Question)
 admin.site.register(Answer)
+admin.site.register(Preference)
