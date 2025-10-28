@@ -18,13 +18,14 @@ openai.api_key = settings.GPT_API_KEY
 @permission_classes([IsAuthenticated])
 def generate_sentence1(request):
     user = request.user
+    category = request.data.get('category')
     level = getattr(user, 'language_level', None)
 
     if level not in dict(Prompt.LANGUAGE_LEVEL_CHOICES):
         return Response({"detail": "Nieprawidłowy poziom językowy"}, status=status.HTTP_400_BAD_REQUEST)
 
     prompt_text = (
-        f"Utwórz przykładowe zdanie w języku niemieckim na poziomie {level},"
+        f"Utwórz przykładowe zdanie w języku niemieckim na poziomie {level} o tematyce '{category}',"
         " w którym trzeba wstawić brakujący rzeczownik/odmieniony czasownik lub rodzajnik."
         "Na końcu sentence (niemieckiego zdania) dodaj też podpowiedź w języku polskim w odpowiedniej formie, która jest odpowiednikiem niemieckiego missing_world."
         "Utwórz inne unikalne zdanie niż poprzednio, różne pod względem słownictwa i konstrukcji."
@@ -59,13 +60,15 @@ def generate_sentence1(request):
 @permission_classes([IsAuthenticated])
 def generate_sentence2(request):
     user = request.user
+    category = request.data.get('category')
+    print(category)
     level = getattr(user, 'language_level', None)
 
     if level not in dict(Prompt.LANGUAGE_LEVEL_CHOICES):
         return Response({"detail": "Nieprawidłowy poziom językowy"}, status=status.HTTP_400_BAD_REQUEST)
 
     prompt_text = (
-        f"Utwórz przykładowe zdanie w języku niemieckim na poziomie {level},"
+        f"Utwórz przykładowe zdanie w języku niemieckim na poziomie {level} o tematyce '{category}',"
         "które trzeba przedłumaczyć na język polski lub odwrotnie."
         "Utwórz inne unikalne zdanie niż poprzednio, różne pod względem słownictwa i konstrukcji."
         "Odpowiedz dokładnie w przedstawionym formacie JSON:\n"
