@@ -50,7 +50,15 @@ function FlashcardSetPage() {
         try {
             const response = await FlashcardService.getFlashcardByCategoryId(categoryId)
             console.log("odp z endpointu: ", response)
-            setFlashcards(response)
+
+            let flashcardsOrder
+            if(recentSet?.categoryId === categoryId && recentSet?.flashcards) {
+                flashcardsOrder = recentSet.flashcards
+            } else {
+                flashcardsOrder = [...response].sort(() => Math.random() - 0.5)
+            }
+
+            setFlashcards(flashcardsOrder)
 
             const response2 = await CategoryService.getCategoryById(categoryId)
             setCategory(response2)
@@ -67,7 +75,7 @@ function FlashcardSetPage() {
                 categoryId,
                 response2.name,
                 response2.image,
-                response,
+                flashcardsOrder,
                 startIndex
             )
         } catch(error) {
