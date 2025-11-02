@@ -7,7 +7,7 @@ import { LevelIcons } from '../icons/LevelIcons';
 import { FaCheckCircle } from "react-icons/fa";
 import { BiSolidErrorCircle } from "react-icons/bi";
 
-function Register() {
+function RegisterPage() {
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
     const [animating, setAnimating] = useState(true);
@@ -326,4 +326,4 @@ function Register() {
     );
 }
 
-export default Register;
+export default RegisterPage;

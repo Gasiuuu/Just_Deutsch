@@ -4,25 +4,25 @@ import UserService from "./services/UserService.js";
 import UserStore from "./stores/UserStore.js";
 import ProtectedRoutes from "./utils/ProtectedRoutes.jsx"
 import StartPage from "./pages/StartPage.jsx";
-import Home from "./pages/Home.jsx";
+import HomePage from "./pages/HomePage.jsx";
 import Login from "./pages/Login/Login.jsx";
 import Navbar from "./components/Navbar.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import Footer from "./components/Footer.jsx";
-import Register from "./pages/Register.jsx";
+import RegisterPage from "./pages/RegisterPage.jsx";
 import FlashcardsPage from "./pages/FlashcardsPage.jsx";
 import FlashcardSetPage from "./pages/FlashcardSetPage.jsx";
 import DictionaryPage from "./pages/DictionaryPage.jsx";
 import TranslatePage from "./pages/TranslatePage.jsx";
 import GapFillPage from "./pages/GapFillPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
-import AddCategory from "./pages/AddCategory.jsx";
-import AddFlashcards from "./pages/AddFlashcards.jsx";
-import EditFlashcardSet from "./pages/EditFlashcardSet.jsx";
-import EditFlashcard from "./pages/EditFlashcard.jsx";
+import AddCategoryPage from "./pages/AddCategoryPage.jsx";
+import AddFlashcardsPage from "./pages/AddFlashcardsPage.jsx";
+import EditFlashcardSetPage from "./pages/EditFlashcardSetPage.jsx";
+import EditFlashcardPage from "./pages/EditFlashcardPage.jsx";
 import QuizTopicsPage from "./pages/QuizTopicsPage.jsx";
 import QuizPage from "./pages/QuizPage.jsx";
-import QuizResult from "./pages/QuizResult.jsx";
+import QuizResultPage from "./pages/QuizResultPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import AiPage from "./pages/AiPage.jsx";
 
@@ -72,24 +72,24 @@ function AppRoutes() {
                 <Route path="/" element={<Navigate to="/start" />} />
                 <Route path="/start" element={<StartPage />} />
                 <Route path="/logowanie" element={<Login />} />
-                <Route path="/rejestracja" element={<Register />} />
+                <Route path="/rejestracja" element={<RegisterPage />} />
                 <Route path="*" element={<NotFoundPage />} />
                 <Route element={<ProtectedRoutes />}>
-                    <Route path="/strona-glowna" element={renderLayout(<Home />)} />
+                    <Route path="/strona-glowna" element={renderLayout(<HomePage />)} />
                     <Route path="/fiszki" element={renderLayout(<FlashcardsPage />)}/>
                     <Route path="/fiszki/:categoryId" element={renderLayout(<FlashcardSetPage />)} />
                     <Route path="/slownik" element={renderLayout(<DictionaryPage />)} />
                     <Route path="/cwiczenia-ai" element={renderLayout(<AiPage />)} />
                     <Route path="cwiczenia-ai/tlumaczenia/:categoryId" element={renderLayout(<TranslatePage />)} />
                     <Route path="/cwiczenia-ai/gap-fill/:categoryId" element={renderLayout(<GapFillPage />)}  />
-                    <Route path="/dodaj-kategorie" element={renderLayout(<AddCategory />)} />
+                    <Route path="/dodaj-kategorie" element={renderLayout(<AddCategoryPage />)} />
                     <Route path="/wybierz-zestaw" element={renderLayout(<FlashcardsPage />)} />
-                    <Route path="/dodaj-fiszki/:categoryId" element={renderLayout(<AddFlashcards />)} />
-                    <Route path="edytuj-zestaw/:categoryId" element={renderLayout(<EditFlashcardSet />)} />
-                    <Route path="edytuj-fiszke/:flashcardId" element={renderLayout(<EditFlashcard />)} />
+                    <Route path="/dodaj-fiszki/:categoryId" element={renderLayout(<AddFlashcardsPage />)} />
+                    <Route path="edytuj-zestaw/:categoryId" element={renderLayout(<EditFlashcardSetPage />)} />
+                    <Route path="edytuj-fiszke/:flashcardId" element={renderLayout(<EditFlashcardPage />)} />
                     <Route path="/quizy" element={renderLayout(<QuizTopicsPage />)} />
                     <Route path="/quiz/:quizId" element={renderLayout(<QuizPage />)} />
-                    <Route path="/quiz/:quizId/wyniki" element={renderLayout(<QuizResult />)} />
+                    <Route path="/quiz/:quizId/wyniki" element={renderLayout(<QuizResultPage />)} />
                     <Route path="/profil" element={<ProfilePage />} />
                 </Route>
 

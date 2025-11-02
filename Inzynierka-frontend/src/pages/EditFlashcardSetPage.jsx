@@ -10,7 +10,7 @@ import CategoryService from "../services/CategoryService.js";
 import {Box, Button, Modal, Stack, Typography} from "@mui/material";
 
 
-function EditFlashcardSet() {
+function EditFlashcardSetPage() {
 
     const [category, setCategory] = useState({})
     const [flashcards, setFlashcards] = useState([])
@@ -326,4 +326,4 @@ function EditFlashcardSet() {
     )
 }
 
-export default EditFlashcardSet
+export default EditFlashcardSetPage

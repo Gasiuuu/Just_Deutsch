@@ -9,7 +9,7 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/pl'
 
 
-function Home() {
+function HomePage() {
 
     const user = UserStore((state) => state.user);
     console.log(user);
@@ -54,4 +54,4 @@ function Home() {
     )
 }
 
-export default Home;
+export default HomePage;

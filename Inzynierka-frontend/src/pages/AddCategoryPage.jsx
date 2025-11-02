@@ -6,7 +6,7 @@ import CategoryService from "../services/CategoryService.js";
 import {IoIosArrowBack} from "react-icons/io";
 
 
-function AddCategory() {
+function AddCategoryPage() {
 
     const [imageUrl, setImageUrl] = useState(null);
     const [imageFile, setImageFile] = useState(null);
@@ -129,4 +129,4 @@ function AddCategory() {
     )
 }
 
-export default AddCategory
+export default AddCategoryPage

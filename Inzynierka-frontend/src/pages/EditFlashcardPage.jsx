@@ -6,7 +6,7 @@ import FlashcardService from "../services/FlashcardService.js";
 import { useParams } from "react-router-dom";
 import {IoIosArrowBack} from "react-icons/io";
 
-function EditFlashcard() {
+function EditFlashcardPage() {
 
     const [flashcard, setFlashcard] = useState({
         front: "",
@@ -277,4 +277,4 @@ function EditFlashcard() {
     )
 }
 
-export default EditFlashcard
+export default EditFlashcardPage

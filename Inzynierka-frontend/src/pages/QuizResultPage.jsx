@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import {IoIosArrowBack, IoMdCheckmarkCircle, IoMdCloseCircle} from "react-icons/io";
 import {FaLightbulb} from "react-icons/fa";
 
-function QuizResult () {
+function QuizResultPage () {
     const location = useLocation()
     const navigate = useNavigate()
     const { quizId } = useParams()
@@ -122,4 +122,4 @@ function QuizResult () {
     )
 }
 
-export default QuizResult
+export default QuizResultPage

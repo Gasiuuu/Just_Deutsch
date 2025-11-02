@@ -7,7 +7,7 @@ import FlashcardService from "../services/FlashcardService.js";
 import { useParams } from "react-router-dom";
 import {IoIosArrowBack} from "react-icons/io";
 
-function AddFlashcards() {
+function AddFlashcardsPage() {
 
     const [front, setFront] = useState("")
     const [reverse, setReverse] = useState("")
@@ -265,4 +265,4 @@ function AddFlashcards() {
     )
 }
 
-export default AddFlashcards
+export default AddFlashcardsPage
