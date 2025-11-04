@@ -12,6 +12,7 @@ from .models import CustomUser, Category, Flashcard, QuizTopic, Question, Answer
 from .serializers import LoginSerializer, RegisterSerializer, CustomUserSerializer, CategorySerializer, \
     FlashcardSerializer, QuizTopicSerializer, QuestionSerializer, AnswerSerializer, QuizAttemptSerializer, \
     RecentQuizSerializer, PreferenceSerializer
+from django.conf import settings
 
 
 class CustomUserViewSet(viewsets.ModelViewSet):
@@ -71,13 +72,28 @@ class AnswerViewSet(viewsets.ModelViewSet):
     serializer_class = AnswerSerializer
     permission_classes = [IsAuthenticated]
 
-def set_jwt_token(response, token):
+def set_jwt_token(response, access_token, refresh_token):
+    access_max_age = int(settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds())
+    refresh_max_age = int(settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds())
+
     response.set_cookie(
         key='access',
-        value=token,
+        value=access_token,
+        max_age=access_max_age,
         httponly=True,
         secure=False,
-        samesite='Lax'
+        samesite='Lax',
+        path='/'
+    )
+
+    response.set_cookie(
+        key='refresh',
+        value=refresh_token,
+        max_age=refresh_max_age,
+        httponly=True,
+        secure=False,
+        samesite='Lax',
+        path='/'
     )
 
 @api_view(['POST'])
@@ -88,15 +104,10 @@ def login_view(request):
         refresh = RefreshToken.for_user(user)
         user_data = CustomUserSerializer(user).data
         response = Response({"message": "Zalogowano pomyślnie", "user": user_data}, status=status.HTTP_200_OK)
-        set_jwt_token(response, str(refresh.access_token))
-        response.set_cookie(
-            key='refresh',
-            value=str(refresh),
-            httponly=True,
-            secure=False,
-            samesite='Lax'
-        )
+
+        set_jwt_token(response, str(refresh.access_token), str(refresh))
         return response
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
@@ -111,8 +122,8 @@ def logout_view(request):
             pass
 
     response = Response({"message": "Wylogowano pomyślnie"}, status=status.HTTP_200_OK)
-    response.delete_cookie("access")
-    response.delete_cookie("refresh")
+    response.delete_cookie('access', path='/', samesite='Lax')
+    response.delete_cookie('refresh', path='/', samesite='Lax')
     return response
 
 
