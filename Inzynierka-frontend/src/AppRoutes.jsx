@@ -25,6 +25,8 @@ import QuizPage from "./pages/QuizPage.jsx";
 import QuizResultPage from "./pages/QuizResultPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import AiPage from "./pages/AiPage.jsx";
+import AlreadyLogged from "./utils/AlreadyLogged.jsx";
+import AlreadyLoggedPage from "./pages/AlreadyLoggedPage.jsx";
 
 
 function AppRoutes() {
@@ -71,8 +73,11 @@ function AppRoutes() {
             <Routes>
                 <Route path="/" element={<Navigate to="/start" />} />
                 <Route path="/start" element={<StartPage />} />
-                <Route path="/logowanie" element={<Login />} />
+                <Route element={<AlreadyLogged />}>
+                    <Route path="/logowanie" element={<Login />} />
+                </Route>
                 <Route path="/rejestracja" element={<RegisterPage />} />
+                <Route path="juz-zalogowany" element={<AlreadyLoggedPage />} />
                 <Route path="*" element={<NotFoundPage />} />
                 <Route element={<ProtectedRoutes />}>
                     <Route path="/strona-glowna" element={renderLayout(<HomePage />)} />
