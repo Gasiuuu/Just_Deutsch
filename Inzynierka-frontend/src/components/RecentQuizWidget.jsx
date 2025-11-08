@@ -22,16 +22,16 @@ function RecentQuizWidget() {
         }
     }
 
-    // const formatTimeStamp = (timestamp) => {
-    //     const date = new Date(timestamp)
-    //     const now = new Date()
-    //     const diffInHours = Math.floor((now - date) / (1000 * 60 * 60))
-    //
-    //     if (diffInHours < 1) return "Przed chwilą"
-    //     if (diffInHours < 24) return `${diffInHours} godz. temu`
-    //     if (diffInHours < 48) return 'Wczoraj'
-    //     return date.toLocaleDateString('pl-PL')
-    // }
+    const formatTimeStamp = (timestamp) => {
+        const date = new Date(timestamp)
+        const now = new Date()
+        const diffInHours = Math.floor((now - date) / (1000 * 60 * 60))
+
+        if (diffInHours < 1) return "Przed chwilą"
+        if (diffInHours < 24) return `${diffInHours} godz. temu`
+        if (diffInHours < 48) return 'Wczoraj'
+        return date.toLocaleDateString('pl-PL')
+    }
 
     const isFinished = () => {
         return recentQuiz.quiz_score === 100
@@ -63,9 +63,9 @@ function RecentQuizWidget() {
                         {recentQuiz.quiz_topic_title}
                     </h4>
                     <div className="flex justify-between">
-                        {/*<p className="text-sm text-gray-800 mb-2">*/}
-                        {/*    {formatTimeStamp(recentQuiz.timestamp)}*/}
-                        {/*</p>*/}
+                        <p className="text-sm text-gray-800 mb-2">
+                            {formatTimeStamp(recentQuiz.timestamp)}
+                        </p>
                     </div>
                 </div>
 

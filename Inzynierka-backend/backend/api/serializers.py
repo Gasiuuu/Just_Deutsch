@@ -136,7 +136,7 @@ class QuizAttemptSerializer(serializers.ModelSerializer):
 class RecentQuizSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecentQuiz
-        fields = ['quiz_topic_id', 'quiz_topic_title', 'quiz_topic_image', 'quiz_score']
+        fields = ['quiz_topic_id', 'quiz_topic_title', 'quiz_topic_image', 'quiz_score', 'timestamp']
 
     def create(self, validated_data):
         user = validated_data.pop('user')  # Pobierz usera z validated_data
@@ -165,7 +165,7 @@ class RecentFlashcardSetSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecentFlashcardSet
         fields = ['category_id', 'category_name', 'category_image', 'flashcards_length', 'last_index', 'flashcard_ids',
-                  'flashcards']
+                  'flashcards', 'timestamp']
 
     def create(self, validated_data):
         flashcard_ids = validated_data.pop('flashcard_ids', [])

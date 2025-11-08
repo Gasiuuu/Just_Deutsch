@@ -224,6 +224,7 @@ class RecentQuiz(models.Model):
     quiz_score = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(auto_now=True)
+    timestamp = models.BigIntegerField(null=True)
 
     class Meta:
         db_table = 'recent_quiz'
@@ -245,6 +246,7 @@ class RecentFlashcardSet(models.Model):
     flashcards_length = models.IntegerField(default=0)
     last_index = models.IntegerField()
     flashcards = models.ManyToManyField(Flashcard, related_name='recent_set', blank=True)
+    timestamp = models.BigIntegerField(null=True)
 
     class Meta:
         db_table = 'recent_flashcard_set'

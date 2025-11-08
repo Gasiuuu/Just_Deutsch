@@ -83,7 +83,8 @@ function FlashcardSetPage() {
                         category_image: response2.image,
                         flashcards_length: response.length,
                         last_index: startIndex,
-                        flashcards: flashcardsOrder.map(f => f.id)
+                        flashcards: flashcardsOrder.map(f => f.id),
+                        timestamp: Date.now()
                     }
                     console.log("gotowy payload: ", payload)
                     await FlashcardService.createRecentFlashcardSet(payload)

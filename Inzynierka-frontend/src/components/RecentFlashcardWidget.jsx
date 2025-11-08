@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react'
 import {useNavigate} from "react-router-dom";
-import QuizService from "../services/QuizService.js";
 import FlashcardService from "../services/FlashcardService.js";
 
 function RecentFlashcardWidget() {
@@ -70,9 +69,9 @@ function RecentFlashcardWidget() {
                         {recentFlashcardSet.category_name}
                     </h4>
                     <div className="flex justify-between">
-                        {/*<p className="text-sm text-gray-800 mb-2">*/}
-                        {/*    {formatTimeStamp(recentFlashcardSet.timestamp)}*/}
-                        {/*</p>*/}
+                        <p className="text-sm text-gray-800 mb-2">
+                            {formatTimeStamp(recentFlashcardSet.timestamp)}
+                        </p>
                         <p>
                             {recentFlashcardSet.last_index + 1} / {recentFlashcardSet.flashcards_length}
                         </p>

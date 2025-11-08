@@ -99,7 +99,8 @@ function QuizPage() {
                 quiz_topic_id: quizInfo.id,
                 quiz_topic_title: quizInfo.title,
                 quiz_topic_image: quizInfo.image,
-                quiz_score: quizScore || 0
+                quiz_score: quizScore || 0,
+                timestamp: Date.now()
             }
             console.log("gotowy payload: ", payload)
             QuizService.createRecentQuizAttempt(payload)
