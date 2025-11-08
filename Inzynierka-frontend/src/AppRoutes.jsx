@@ -41,6 +41,7 @@ function AppRoutes() {
                 setUser(userData)
             } catch (e) {
                 console.log("Brak zalogowanego użytkownika: ", e)
+                setUser(null)
             } finally {
                 setRendering(false);
             }
@@ -77,7 +78,7 @@ function AppRoutes() {
                     <Route path="/logowanie" element={<Login />} />
                 </Route>
                 <Route path="/rejestracja" element={<RegisterPage />} />
-                <Route path="juz-zalogowany" element={<AlreadyLoggedPage />} />
+                {/*<Route path="juz-zalogowany" element={<AlreadyLoggedPage />} />*/}
                 <Route path="*" element={<NotFoundPage />} />
                 <Route element={<ProtectedRoutes />}>
                     <Route path="/strona-glowna" element={renderLayout(<HomePage />)} />
