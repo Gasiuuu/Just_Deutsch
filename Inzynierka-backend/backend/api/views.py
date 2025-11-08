@@ -8,10 +8,11 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 from django.utils import timezone
 
-from .models import CustomUser, Category, Flashcard, QuizTopic, Question, Answer, QuizAttempt, RecentQuiz, Preference
+from .models import CustomUser, Category, Flashcard, QuizTopic, Question, Answer, QuizAttempt, RecentQuiz, Preference, \
+    RecentFlashcardSet
 from .serializers import LoginSerializer, RegisterSerializer, CustomUserSerializer, CategorySerializer, \
     FlashcardSerializer, QuizTopicSerializer, QuestionSerializer, AnswerSerializer, QuizAttemptSerializer, \
-    RecentQuizSerializer, PreferenceSerializer
+    RecentQuizSerializer, PreferenceSerializer, RecentFlashcardSetSerializer
 from django.conf import settings
 
 
@@ -209,6 +210,43 @@ def set_recent_quiz(request):
         )
     except RecentQuiz.DoesNotExist:
         serializer = RecentQuizSerializer(
+            data=request.data,
+            context={'request': request}
+        )
+
+    if serializer.is_valid():
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_recent_flashcard_set(request):
+    try:
+        recent_flashcard_set = RecentFlashcardSet.objects.get(user=request.user)
+        serializer = RecentFlashcardSetSerializer(recent_flashcard_set, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except RecentFlashcardSet.DoesNotExist:
+        return Response(
+            {},
+            status=status.HTTP_200_OK
+        )
+
+
+@api_view(['POST', 'PATCH'])
+@permission_classes([IsAuthenticated])
+def set_recent_flashcard_set(request):
+    try:
+        recent_flashcard_set = RecentFlashcardSet.objects.get(user=request.user)
+        serializer = RecentFlashcardSetSerializer(
+            recent_flashcard_set,
+            data=request.data,
+            partial=True,
+            context={'request': request}
+        )
+    except RecentFlashcardSet.DoesNotExist:
+        serializer = RecentFlashcardSetSerializer(
             data=request.data,
             context={'request': request}
         )

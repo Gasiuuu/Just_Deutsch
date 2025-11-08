@@ -2,7 +2,7 @@ from django.urls import path
 from .views import login_view, registration_view, admin_only_view, user_only_view, FlashcardViewSet, CategoryViewSet, \
     get_flashcards_by_category, me_view, logout_view, QuizTopicViewSet, QuestionViewSet, get_questions_by_quiz, \
     AnswerViewSet, get_answers_by_question, create_quiz_attempt, get_recent_quiz, set_recent_quiz, CustomUserViewSet, \
-    get_all_preferences
+    get_all_preferences, get_recent_flashcard_set, set_recent_flashcard_set
 
 urlpatterns = [
     path('login/', login_view, name='login'),
@@ -27,4 +27,6 @@ urlpatterns = [
     path('quiz/<int:quiz_id>/attempt', create_quiz_attempt, name='create-quiz-attempt'),
     path('recent-quiz/', get_recent_quiz, name='get_recent_quiz'),
     path('recent-quiz/set/', set_recent_quiz, name='set_recent_quiz'),
+    path('recent-flashcard-set/', get_recent_flashcard_set, name='get_recent_flashcard_set'),
+    path('recent-flashcard-set/set/', set_recent_flashcard_set, name='set_recent_flashcard_set'),
 ]

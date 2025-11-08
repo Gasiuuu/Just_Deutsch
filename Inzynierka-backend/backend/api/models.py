@@ -232,3 +232,24 @@ class RecentQuiz(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.quiz_topic_title}"
+
+class RecentFlashcardSet(models.Model):
+    user = models.OneToOneField(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='recent_flashcard_set')
+
+    category_id = models.IntegerField()
+    category_name = models.CharField(max_length=255)
+    category_image = models.URLField(max_length=500, blank=True, null=True)
+    flashcards_length = models.IntegerField(default=0)
+    last_index = models.IntegerField()
+    flashcards = models.ManyToManyField(Flashcard, related_name='recent_set', blank=True)
+
+    class Meta:
+        db_table = 'recent_flashcard_set'
+        verbose_name = 'Ostatni zestaw fiszek'
+        verbose_name_plural = 'Ostatnie zestawy fiszek'
+
+    def __str__(self):
+        return f"{self.user.username} - {self.category_name}"

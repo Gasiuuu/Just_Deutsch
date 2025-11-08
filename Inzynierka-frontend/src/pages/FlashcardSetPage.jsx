@@ -7,7 +7,6 @@ import { IoVolumeMedium } from "react-icons/io5";
 import EmptySet from "../components/animations/EmptySet.jsx"
 import Login from "./Login/Login.module.css";
 import {IoIosArrowBack, IoMdAdd} from "react-icons/io";
-import useFlashcardStore from "../stores/useFlashcardStore.js";
 import CategoryService from "../services/CategoryService.js";
 
 
@@ -38,63 +37,81 @@ function FlashcardSetPage() {
 
     const { categoryId } = useParams();
     const [flashcards, setFlashcards] = useState([])
-    const [category, setCategory] = useState(null)
     const [currentIndex, setCurrentIndex] = useState(0)
     const [isFront, setIsFront] = useState(false)
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const { recentSet, setRecentSet, updateLastIndex } = useFlashcardStore()
-
-    const fetchFlashcards = async (categoryId) => {
-        try {
-            const response = await FlashcardService.getFlashcardByCategoryId(categoryId)
-            console.log("odp z endpointu: ", response)
-
-            let flashcardsOrder
-            if(recentSet?.categoryId === categoryId && recentSet?.flashcards) {
-                flashcardsOrder = recentSet.flashcards
-            } else {
-                flashcardsOrder = [...response].sort(() => Math.random() - 0.5)
-            }
-
-            setFlashcards(flashcardsOrder)
-
-            const response2 = await CategoryService.getCategoryById(categoryId)
-            setCategory(response2)
-
-
-            const startIndex = recentSet?.categoryId === categoryId
-                ? recentSet?.lastIndex
-                : 0
-
-            setCurrentIndex(startIndex)
-            setIsFront(true)
-
-            setRecentSet(
-                categoryId,
-                response2.name,
-                response2.image,
-                flashcardsOrder,
-                startIndex
-            )
-        } catch(error) {
-            console.error(error);
-            setError("Nie udało załadować się fiszek")
-        } finally {
-            setLoading(false)
-        }
-    }
-
     useEffect(() => {
+
+        const fetchFlashcards = async (categoryId) => {
+            try {
+                const response = await FlashcardService.getFlashcardByCategoryId(categoryId)
+
+                const recentSet = await FlashcardService.getRecentFlashcardSet()
+
+                let flashcardsOrder
+
+                if(recentSet?.category_id === Number(categoryId) && recentSet?.flashcards?.length > 0) {
+                    const savedIds = recentSet.flashcards.map(f => f.id)
+                    const flashcardMap = new Map(response.map(f => [f.id, f]))
+
+                    flashcardsOrder = savedIds
+                        .filter(id => flashcardMap.has(id))
+                        .map(id => flashcardMap.get(id))
+
+                    const newFlashcards = response.filter(f => !savedIds.includes(f.id))
+                    flashcardsOrder = [...flashcardsOrder, ...newFlashcards]
+                } else {
+                    flashcardsOrder = [...response].sort(() => Math.random() - 0.5)
+                }
+
+                const response2 = await CategoryService.getCategoryById(categoryId)
+                setFlashcards(flashcardsOrder)
+
+                const startIndex = recentSet?.category_id === Number(categoryId)
+                    ? recentSet?.last_index
+                    : 0
+
+                setCurrentIndex(startIndex)
+                setIsFront(true)
+
+                if(response && response2) {
+                    const payload = {
+                        category_id: response2.id,
+                        category_name: response2.name,
+                        category_image: response2.image,
+                        flashcards_length: response.length,
+                        last_index: startIndex,
+                        flashcards: flashcardsOrder.map(f => f.id)
+                    }
+                    console.log("gotowy payload: ", payload)
+                    await FlashcardService.createRecentFlashcardSet(payload)
+                }
+            } catch(error) {
+                console.error(error);
+                setError("Nie udało załadować się fiszek")
+
+            } finally {
+                setLoading(false)
+            }
+        }
+
         fetchFlashcards(categoryId);
     }, [categoryId]);
 
     useEffect(() => {
         if (flashcards.length > 0) {
-            updateLastIndex(currentIndex)
+            const updateIndex = async () => {
+                try {
+                    await FlashcardService.updateRecentIndex(currentIndex)
+                } catch (e) {
+                    console.error("Wystąpił błąd aktualizacji indeksu: ", e)
+                }
+            }
+            updateIndex()
         }
-    }, [currentIndex, updateLastIndex])
+    }, [currentIndex])
 
     if(loading) return <p>Ładowanie...</p>;
     if(error) return <p>{error}</p>

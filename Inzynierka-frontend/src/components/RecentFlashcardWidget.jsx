@@ -1,12 +1,34 @@
-import React from 'react'
-import useFlashcardStore from "../stores/useFlashcardStore.js";
+import React, {useEffect, useState} from 'react'
 import {useNavigate} from "react-router-dom";
+import QuizService from "../services/QuizService.js";
+import FlashcardService from "../services/FlashcardService.js";
 
 function RecentFlashcardWidget() {
 
-    const { recentSet } = useFlashcardStore()
+    const [recentFlashcardSet, setRecentFlashcardSet] = useState({})
     const navigate = useNavigate()
-    const progress = Math.round(((recentSet.lastIndex + 1) / recentSet.flashcards.length) * 100)
+    const [progress, setProgress] = useState(0)
+
+    useEffect(() => {
+        fetchRecentFlashcardSet()
+    }, [])
+
+    const fetchRecentFlashcardSet = async () => {
+        try {
+            const response = await FlashcardService.getRecentFlashcardSet()
+            console.log('Otrzymano ostatni zestaw fiszek: ', response)
+            setRecentFlashcardSet(response)
+
+            const totalCards = response.flashcards_length
+            if(totalCards > 0) {
+                const currentCard = response.last_index + 1
+                const calculatedProgress = Math.round((currentCard/totalCards) * 100)
+                setProgress(calculatedProgress)
+            }
+        } catch(error) {
+            console.error('Błąd wczytywania zestawu fiszek: ', error);
+        }
+    }
 
     const formatTimeStamp = (timestamp) => {
         const date = new Date(timestamp)
@@ -20,15 +42,15 @@ function RecentFlashcardWidget() {
     }
 
     const isFinished = () => {
-        return recentSet.lastIndex === recentSet.flashcards.length - 1;
+        return recentFlashcardSet.last_index === recentFlashcardSet.flashcards_length - 1;
     }
 
-    if(!recentSet) return null
+    if(!recentFlashcardSet) return null
 
     return (
         <div
             className="w-1/2 bg-white rounded-xl p-5 shadow-md transition-transform hover:-translate-y-0.5 cursor-pointer"
-            onClick={() => navigate(`/fiszki/${recentSet.categoryId}`)}
+            onClick={() => navigate(`/fiszki/${recentFlashcardSet.category_id}`)}
         >
             {isFinished() ? (
                 <h3 className="text-xl font-semibold text-gray-800 mb-4">Ostatnio ukończony zestaw</h3>
@@ -36,23 +58,23 @@ function RecentFlashcardWidget() {
                 <h3 className="text-xl font-semibold text-gray-800 mb-4">Kontynuuj naukę</h3>
             )}
             <div className="flex items-center gap-4  mt-6">
-                {recentSet.categoryImage && (
+                {recentFlashcardSet.category_image && (
                     <img
-                        src={recentSet.categoryImage}
-                        alt={recentSet.categoryName}
+                        src={recentFlashcardSet.category_image}
+                        alt={recentFlashcardSet.category_name}
                         className="w-25 h-25 rounded-full object-cover"
                     />
                 )}
                 <div className="flex-1">
                     <h4 className="font-medium text-gray-800 text-lg mb-1">
-                        {recentSet.categoryName}
+                        {recentFlashcardSet.category_name}
                     </h4>
                     <div className="flex justify-between">
-                        <p className="text-sm text-gray-800 mb-2">
-                            {formatTimeStamp(recentSet.timestamp)}
-                        </p>
+                        {/*<p className="text-sm text-gray-800 mb-2">*/}
+                        {/*    {formatTimeStamp(recentFlashcardSet.timestamp)}*/}
+                        {/*</p>*/}
                         <p>
-                            {recentSet.lastIndex + 1} / {recentSet.flashcards.length}
+                            {recentFlashcardSet.last_index + 1} / {recentFlashcardSet.flashcards_length}
                         </p>
                     </div>
                     <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">

@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
 
-from .models import CustomUser, Category, Flashcard, QuizTopic, Question, Answer, QuizAttempt, RecentQuiz, Preference
+from .models import CustomUser, Category, Flashcard, QuizTopic, Question, Answer, QuizAttempt, RecentQuiz, Preference, \
+    RecentFlashcardSet
 
 User = get_user_model()
 
@@ -70,10 +71,18 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'image', 'owner')
 
 class FlashcardSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
     class Meta:
         model = Flashcard
         fields = ('id', 'front', 'reverse', 'synonym', 'plural', 'article', 'color', 'example_sentence', 'example_sentence_translation', 'image', 'category', 'front_audio', 'example_sentence_audio')
 
+    def get_image(self, obj):
+        if obj.image:
+            request = self.context.get('request')
+            if request is not None:
+                return request.build_absolute_uri(obj.image.url)
+            return obj.image.url
+        return None
     # def validate(self, category):
     #     user = self.context.get('request').user
     #     if category.owner != user and not (user.is_staff or user.is_superuser):
@@ -141,4 +150,47 @@ class RecentQuizSerializer(serializers.ModelSerializer):
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
+        return instance
+
+
+class RecentFlashcardSetSerializer(serializers.ModelSerializer):
+    flashcard_ids = serializers.ListField(
+        child=serializers.IntegerField(),
+        write_only=True,
+        required=False
+    )
+
+    flashcards = FlashcardSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = RecentFlashcardSet
+        fields = ['category_id', 'category_name', 'category_image', 'flashcards_length', 'last_index', 'flashcard_ids',
+                  'flashcards']
+
+    def create(self, validated_data):
+        flashcard_ids = validated_data.pop('flashcard_ids', [])
+        user = self.context['request'].user
+
+        obj, created = RecentFlashcardSet.objects.update_or_create(
+            user=user,
+            defaults=validated_data
+        )
+
+        if flashcard_ids:
+            flashcards = Flashcard.objects.filter(id__in=flashcard_ids)
+            obj.flashcards.set(flashcards)
+
+        return obj
+
+    def update(self, instance, validated_data):
+        flashcard_ids = validated_data.pop('flashcard_ids', None)
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        if flashcard_ids is not None:
+            flashcards = Flashcard.objects.filter(id__in=flashcard_ids)
+            instance.flashcards.set(flashcards)
+
         return instance

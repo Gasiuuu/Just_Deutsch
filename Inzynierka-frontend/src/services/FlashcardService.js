@@ -37,6 +37,19 @@ class FlashcardService {
     static async deleteFlashcard(id) {
         await axios.delete(`${this.BASE_URL}/flashcard/${id}/`, { withCredentials: true });
     }
+
+    static async createRecentFlashcardSet(data) {
+        await axios.post(`${this.BASE_URL}/recent-flashcard-set/set/`, data, { withCredentials: true })
+    }
+
+    static async getRecentFlashcardSet() {
+        const response = await axios.get(`${this.BASE_URL}/recent-flashcard-set/`, { withCredentials: true })
+        return response.data
+    }
+
+    static async updateRecentIndex(lastIndex) {
+        await axios.patch(`${this.BASE_URL}/recent-flashcard-set/set/`, {"last_index": lastIndex}, { withCredentials: true })
+    }
 }
 
 export default FlashcardService;
