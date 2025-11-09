@@ -46,20 +46,31 @@ class RegisterSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(required=True)
     language_level = serializers.ChoiceField(choices=CustomUser.LANGUAGE_LEVEL_CHOICES, required=True)
     password = serializers.CharField(required=True, write_only=True)
+    preference_ids = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Preference.objects.all(),
+        source='preferences',
+        required=False,
+        write_only=True
+    )
 
     class Meta:
-        model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'password', 'language_level')
+        model = CustomUser
+        fields = ('username', 'first_name', 'last_name', 'email', 'password', 'language_level', 'preference_ids')
 
     def create(self, validated_data):
-        user = User.objects.create_user(
+        preferences = validated_data.pop('preferences')
+        user = CustomUser.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
-            language_level=validated_data['language_level'],
+            language_level=validated_data['language_level']
         )
+
+        if(preferences):
+            user.preferences.set(preferences)
         return user
 
 class CategorySerializer(serializers.ModelSerializer):
