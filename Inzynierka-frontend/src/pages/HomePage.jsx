@@ -7,13 +7,14 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar'
 import dayjs from 'dayjs'
 import 'dayjs/locale/pl'
+import DailyChallengeWidget from "../components/DailyChallengeWidget.jsx";
 
 
 function HomePage() {
 
     const user = UserStore((state) => state.user);
     console.log(user);
-    const [selectedDate, setSelectedDate] = useState(dayjs());
+    // const [selectedDate, setSelectedDate] = useState(dayjs());
     const date = new Date();
     console.log(date.getHours());
 
@@ -40,13 +41,14 @@ function HomePage() {
                 </div>
 
                 <div>
-                    <div className="bg-white rounded-lg shadow-md">
-                        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pl">
-                            <DateCalendar
-                                value={selectedDate}
-                                onChange={(newValue) => setSelectedDate(newValue)}
-                            />
-                        </LocalizationProvider>
+                    <div>
+                        {/*<LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pl">*/}
+                        {/*    <DateCalendar*/}
+                        {/*        value={selectedDate}*/}
+                        {/*        onChange={(newValue) => setSelectedDate(newValue)}*/}
+                        {/*    />*/}
+                        {/*</LocalizationProvider>*/}
+                        <DailyChallengeWidget />
                     </div>
                 </div>
             </div>

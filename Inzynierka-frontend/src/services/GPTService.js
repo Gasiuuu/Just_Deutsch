@@ -30,6 +30,20 @@ class GPTService {
         )
         return response.data;
     }
+
+    static async getDailyChallenge() {
+        const response = await axios.get(`${this.BASE_URL}/daily-challenge/`,
+            {withCredentials: true}
+        );
+        return response.data;
+    }
+
+    static async getUserStreak() {
+        const response = await axios.get(`${this.BASE_URL}/user/streak/`,
+            {withCredentials: true}
+        );
+        return response.data;
+    }
 }
 
 export default GPTService;
