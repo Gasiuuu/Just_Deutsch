@@ -298,7 +298,7 @@ function RegisterPage() {
                                                     key={pref.id}
                                                     type="button"
                                                     onClick={() => togglePreference(pref.id)}
-                                                    className={`px-4 py-3 rounded-lg border-2 text-lg transition-all duration-400 ease-in-out flex items-center gap-2 ${
+                                                    className={`px-4 py-3 rounded-lg border-2 text-lg    transition-all duration-400 ease-in-out flex items-center gap-2 ${
                                                         selectedPreferences.includes(pref.id)
                                                             ? 'bg-gray-600 text-white border-gray-600'
                                                             : 'bg-transparent text-white hover:shadow-[4px_4px_8px_rgba(0,0,0,0.3)]'
