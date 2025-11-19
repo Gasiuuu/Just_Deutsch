@@ -478,6 +478,13 @@ def get_user_streak(request):
 
     streak, created = UserStreak.objects.get_or_create(user=user)
 
+    today = timezone.now().date()
+    yesterday = today - timedelta(days=1)
+
+    if streak.last_completed_date and streak.last_completed_date < yesterday:
+        streak.streak_days = 0
+        streak.save()
+
     serializer = UserStreakSerializer(streak)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
