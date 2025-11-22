@@ -106,7 +106,7 @@ function DailyChallengeWidget() {
                             className="px-8 py-4 mx-auto bg-gradient-to-r from-[#000080] to-[#800080] text-white text-2xl font-medium rounded-xl cursor-pointer hover:shadow-lg transition-shadow duration-300"
                             onClick={(e) => {
                                 e.stopPropagation()
-                                navigate(`/codzienne-wyzwania/`)
+                                navigate(`/codzienne-wyzwania`)
                             }
                             }
                         >

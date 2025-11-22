@@ -27,6 +27,7 @@ import ProfilePage from "./pages/ProfilePage.jsx";
 import AiPage from "./pages/AiPage.jsx";
 import AlreadyLogged from "./utils/AlreadyLogged.jsx";
 import AlreadyLoggedPage from "./pages/AlreadyLoggedPage.jsx";
+import DailyChallengePage from "./pages/DailyChallengePage.jsx";
 
 
 function AppRoutes() {
@@ -97,6 +98,7 @@ function AppRoutes() {
                     <Route path="/quiz/:quizId" element={renderLayout(<QuizPage />)} />
                     <Route path="/quiz/:quizId/wyniki" element={renderLayout(<QuizResultPage />)} />
                     <Route path="/profil" element={<ProfilePage />} />
+                    <Route path="/codzienne-wyzwania" element={renderLayout(<DailyChallengePage />)} />
                 </Route>
 
                 {UserService.adminOnly() && (

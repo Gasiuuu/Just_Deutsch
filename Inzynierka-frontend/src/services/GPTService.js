@@ -38,6 +38,13 @@ class GPTService {
         return response.data;
     }
 
+    static async submitDailyChallenge(data, id) {
+        await axios.post(`${this.BASE_URL}/daily-challenge/${id}/submit/`,
+            data,
+            {withCredentials: true}
+        )
+    }
+
     static async getUserStreak() {
         const response = await axios.get(`${this.BASE_URL}/user/streak/`,
             {withCredentials: true}
